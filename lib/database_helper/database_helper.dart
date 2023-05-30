@@ -22,7 +22,6 @@ class DatabaseHelper {
     return _database;
   }
 
-
   Future<int> insertFamily(
       TextEditingController familyHeadController,
       TextEditingController membershipNoController,
@@ -39,34 +38,43 @@ class DatabaseHelper {
     UserRepo userRepo = UserRepo();
     userRepo.createDb(_database);
     // try {
-      Family familyData = Family(
-          int.tryParse(membershipNoController.text)??0,
-          familyHeadController.text,
-          phoneNoController.text,
-          int.tryParse(noOfMembersController.text)??0,
-          sessionController.text,
-          annualFeeController.text,
-          familyTypeController.text,
-          (int.tryParse(yearController.text))??0,
-          sessionController.text
-      );
+    Family familyData = Family(
+        int.tryParse(membershipNoController.text) ?? 0,
+        familyHeadController.text,
+        phoneNoController.text,
+        int.tryParse(noOfMembersController.text) ?? 0,
+        sessionController.text,
+        annualFeeController.text,
+        familyTypeController.text,
+        (int.tryParse(yearController.text)) ?? 0,
+        sessionController.text);
 
-      TransactionDetail transactionData = TransactionDetail(
-          int.tryParse(membershipNoController.text)??0,
-          int.tryParse(yearController.text)??0,
-          sessionController.text,
-          annualFeeController.text,
-          NepaliDateTime.now().toString(),
-          amountReceivedController.text,
-          transactionTypeController.text,
-          receiptNoController.text,
-      );
-      _database?.insert('familyTable', familyData.toMap());
-      _database?.insert('transactionDetailTable', transactionData.toMap());
-      return 1;
+    TransactionDetail transactionData = TransactionDetail(
+      int.tryParse(membershipNoController.text) ?? 0,
+      int.tryParse(yearController.text) ?? 0,
+      sessionController.text,
+      annualFeeController.text,
+      NepaliDateTime.now().toString(),
+      amountReceivedController.text,
+      transactionTypeController.text,
+      receiptNoController.text,
+    );
+    _database?.insert('familyTable', familyData.toMap());
+    _database?.insert('transactionDetailTable', transactionData.toMap());
+    return 1;
     // } catch(error){
     //   return 0;
     // }
   }
 
+  Future<List<Map<String, dynamic>>> getTableData() async {
+    await openDB();
+
+    final List<Map<String, dynamic>> familyTableData =
+        await _database!.query('familyTable');
+    final List<Map<String, dynamic>> transactionDetailTableData =
+        await _database!.query('transactionDetailTable');
+
+    return familyTableData + transactionDetailTableData;
+  }
 }

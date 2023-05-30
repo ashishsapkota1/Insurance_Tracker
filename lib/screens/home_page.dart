@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hira/screens/add_new.dart';
 
+import 'allfamily.dart';
+
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
 
@@ -10,6 +12,8 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   int _currentIndex = 0;
+  final PageController _pageController = PageController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,44 +21,67 @@ class _HomepageState extends State<Homepage> {
         centerTitle: true,
         title: const Text('Insured Tracker'),
       ),
-      body: Stack(children: [
-        Positioned(
-          left: 0,
-          bottom: 0,
-          right: 0,
-          child: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (index) {
+      body: Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
               setState(() {
                 _currentIndex = index;
               });
             },
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.payment),
-                label: 'This session',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.family_restroom),
-                label: 'All family',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.timelapse_rounded),
-                label: 'Lapsed',
-              ),
+            children: [
+              Container(),
+              AllFamilyPage(),
+              Container(),
             ],
           ),
-        )
-      ]),
-      floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 57.0),
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> const AddFamily()));
-            },
-            child: const Icon(Icons.add),
+          Positioned(
+            left: 0,
+            bottom: 0,
+            right: 0,
+            child: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                  _pageController.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                });
+              },
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.payment),
+                  label: 'This session',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.family_restroom),
+                  label: 'All family',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.timelapse_rounded),
+                  label: 'Lapsed',
+                ),
+              ],
+            ),
           ),
+        ],
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 57.0),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddFamily()),
+            );
+          },
+          child: const Icon(Icons.add),
         ),
+      ),
     );
   }
 }

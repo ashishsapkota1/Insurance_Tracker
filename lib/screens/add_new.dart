@@ -14,10 +14,9 @@ class AddFamily extends StatefulWidget {
 
 class _AddFamilyState extends State<AddFamily> {
 
-  bool isAmountReceived = false;
-
-  final Family family = Family(0,'','',0,'','','',0,'');
-  final TransactionDetail transactionDetail = TransactionDetail(0,0,'','','','','','');
+  final Family family = Family(0, '', '', 0, '', '', '', 0, '');
+  final TransactionDetail transactionDetail =
+      TransactionDetail(0, 0, '', '', '', '', '', '');
   DatabaseHelper helper = DatabaseHelper();
   Database? _database;
   TextEditingController familyHeadController = TextEditingController();
@@ -71,14 +70,8 @@ class _AddFamilyState extends State<AddFamily> {
       'Kartik-Mangsir-Poush',
       'Magh-Falgun-Chaitra'
     ];
-    var transactionTypeItems = [
-      'New',
-      'Renew'
-    ];
-    var amountReceivedItems = [
-      'Yes',
-      'No'
-    ];
+    var transactionTypeItems = ['New', 'Renew'];
+    var amountReceivedItems = ['Yes', 'No'];
     List<String> getYears(int year) {
       int currentYear = NepaliDateTime.now().year;
 
@@ -232,29 +225,27 @@ class _AddFamilyState extends State<AddFamily> {
                         yearController.text = newValue;
                       });
                     })),
-
             Padding(
-                padding: const EdgeInsets.all(10),
-                child: DropdownButtonFormField(
-                    decoration: InputDecoration(
-                        label: const Text('Session'),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8))),
-                    value: sessionDropdownValue,
-                    items: sessionItems.map((String items) {
-                      return DropdownMenuItem(
-                        value: items,
-                        child: Text(items),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        sessionDropdownValue = newValue!;
-                        sessionController.text = newValue;
-                      });
-
-                    }
-                    ),),
+              padding: const EdgeInsets.all(10),
+              child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                      label: const Text('Session'),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                  value: sessionDropdownValue,
+                  items: sessionItems.map((String items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      sessionDropdownValue = newValue!;
+                      sessionController.text = newValue;
+                    });
+                  }),
+            ),
             Padding(
                 padding: const EdgeInsets.all(10),
                 child: TextFormField(
@@ -286,9 +277,8 @@ class _AddFamilyState extends State<AddFamily> {
                       amountReceivedDropdownValue = newValue!;
                       amountReceivedController.text = newValue;
                     });
-
-                  }
-              ),),
+                  }),
+            ),
             TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -296,9 +286,9 @@ class _AddFamilyState extends State<AddFamily> {
                       left: 50, top: 14, right: 50, bottom: 14),
                 ),
                 onPressed: () {
-                     setState(() {
-                       _save();
-                     });
+                  setState(() {
+                    _save();
+                  });
                 },
                 child: const Text(
                   'Add',
@@ -311,47 +301,37 @@ class _AddFamilyState extends State<AddFamily> {
     );
   }
 
-
-
   void _save() async {
-
     int result = (await helper.insertFamily(
-      familyHeadController,
-      membershipNoController,
-      phoneNoController,
-      noOfMembersController,
-      annualFeeController,
-      receiptNoController,
-      familyTypeController,
-      transactionTypeController,
-      yearController,
-      sessionController,
-      amountReceivedController
-    ));
+        familyHeadController,
+        membershipNoController,
+        phoneNoController,
+        noOfMembersController,
+        annualFeeController,
+        receiptNoController,
+        familyTypeController,
+        transactionTypeController,
+        yearController,
+        sessionController,
+        amountReceivedController));
     if (result != 0) {
       _showAlertDialog('Status', "New family added successfully");
     } else {
       _showAlertDialog('Status', "Failed to add new family.");
     }
-
-
   }
-
-
-
-
 
   void _showAlertDialog(String title, String message) {
     AlertDialog alertDialog =
-    AlertDialog(title: Text(title), content: Text(message));
+        AlertDialog(title: Text(title), content: Text(message));
     showDialog(
       context: context,
       builder: (_) => alertDialog,
     );
   }
 
-  Future<Database?> openDB()async{
-    _database= await DatabaseHelper().openDB();
+  Future<Database?> openDB() async {
+    _database = await DatabaseHelper().openDB();
     return _database;
   }
 }

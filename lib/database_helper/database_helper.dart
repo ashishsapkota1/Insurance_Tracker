@@ -77,4 +77,13 @@ class DatabaseHelper {
 
     return familyTableData + transactionDetailTableData;
   }
+
+  Future<List<Map<String, dynamic>>> searchData(String searchTerm) async {
+     await openDB();
+
+    return _database!.query('familyTable',
+        where: 'hiCode LIKE ?', whereArgs: ['%$searchTerm%']);
+  }
+
+
 }

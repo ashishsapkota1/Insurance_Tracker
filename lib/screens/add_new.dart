@@ -31,6 +31,8 @@ class _AddFamilyState extends State<AddFamily> {
   TextEditingController sessionController = TextEditingController();
   TextEditingController amountReceivedController = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     NepaliDateTime today = NepaliDateTime.now();
@@ -93,83 +95,161 @@ class _AddFamilyState extends State<AddFamily> {
         title: const Text('Insured Tracker'),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Text(
-                'Family Information',
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Text(
+                  'Family Information',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    validator: (value){
+                      if(value==null || value.isEmpty){
+                        return 'Please enter Name';
+                      }
+                      return null;
+                    },
+                    controller: familyHeadController,
+                    decoration: InputDecoration(
+                        label: const Text('Family Head'),
+                        hintText: 'Name of Head of the Family',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        )),
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    validator: (value){
+                      if(value == null || value.isEmpty){
+                        return 'Please enter HICODE';
+                      }
+                      return null;
+                    },
+                    controller: membershipNoController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        label: const Text('Membership No.'),
+                        hintText: 'Membership No.',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        )),
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: phoneNoController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        label: const Text('Phone No.'),
+                        hintText: 'Phone No.',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        )),
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: noOfMembersController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        label: const Text('No. of members'),
+                        hintText: 'No. of members',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        )),
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: annualFeeController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        label: const Text('Annual Fee'),
+                        hintText: 'Annual Fee',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        )),
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          label: const Text('Family Type'),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
+                      value: familyTypeDropdownValue,
+                      items: items.map((String items) {
+                        return DropdownMenuItem(
+                          value: items,
+                          child: Text(items),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          familyTypeDropdownValue = newValue!;
+                          familyTypeController.text = newValue;
+                        });
+                      })),
+              const Text(
+                'Transaction Information',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
-            ),
-            Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: familyHeadController,
-                  decoration: InputDecoration(
-                      label: const Text('Family Head'),
-                      hintText: 'Name of Head of the Family',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: membershipNoController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      label: const Text('Membership No.'),
-                      hintText: 'Membership No.',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: phoneNoController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      label: const Text('Phone No.'),
-                      hintText: 'Phone No.',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: noOfMembersController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      label: const Text('No. of members'),
-                      hintText: 'No. of members',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
-                )),
-            Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: annualFeeController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      label: const Text('Annual Fee'),
-                      hintText: 'Annual Fee',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
-                )),
-            Padding(
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          label: const Text('Transaction type'),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
+                      value: transactionTypeDropdownValue,
+                      items: transactionTypeItems.map((String items) {
+                        return DropdownMenuItem(
+                          value: items,
+                          child: Text(items),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          transactionTypeDropdownValue = newValue!;
+                          transactionTypeController.text = newValue;
+                        });
+                      })),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          label: const Text('Year'),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
+                      value: yearsDropdownValue,
+                      items: yearsList.map((String items) {
+                        return DropdownMenuItem(
+                          value: items,
+                          child: Text(items),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          yearsDropdownValue = newValue!;
+                          yearController.text = newValue;
+                        });
+                      })),
+              Padding(
                 padding: const EdgeInsets.all(10),
                 child: DropdownButtonFormField(
                     decoration: InputDecoration(
-                        label: const Text('Family Type'),
+                        label: const Text('Session'),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8))),
-                    value: familyTypeDropdownValue,
-                    items: items.map((String items) {
+                    value: sessionDropdownValue,
+                    items: sessionItems.map((String items) {
                       return DropdownMenuItem(
                         value: items,
                         child: Text(items),
@@ -177,23 +257,32 @@ class _AddFamilyState extends State<AddFamily> {
                     }).toList(),
                     onChanged: (String? newValue) {
                       setState(() {
-                        familyTypeDropdownValue = newValue!;
-                        familyTypeController.text = newValue;
+                        sessionDropdownValue = newValue!;
+                        sessionController.text = newValue;
                       });
-                    })),
-            const Text(
-              'Transaction Information',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            Padding(
+                    }),
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: receiptNoController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                        label: const Text('Receipt No.'),
+                        hintText: 'Receipt No.',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        )),
+                  )),
+              Padding(
                 padding: const EdgeInsets.all(10),
                 child: DropdownButtonFormField(
                     decoration: InputDecoration(
-                        label: const Text('Transaction type'),
+                        label: const Text('Amount Received?'),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8))),
-                    value: transactionTypeDropdownValue,
-                    items: transactionTypeItems.map((String items) {
+                    value: amountReceivedDropdownValue,
+                    items: amountReceivedItems.map((String items) {
                       return DropdownMenuItem(
                         value: items,
                         child: Text(items),
@@ -201,101 +290,32 @@ class _AddFamilyState extends State<AddFamily> {
                     }).toList(),
                     onChanged: (String? newValue) {
                       setState(() {
-                        transactionTypeDropdownValue = newValue!;
-                        transactionTypeController.text = newValue;
+                        amountReceivedDropdownValue = newValue!;
+                        amountReceivedController.text = newValue;
                       });
-                    })),
-            Padding(
-                padding: const EdgeInsets.all(10),
-                child: DropdownButtonFormField(
-                    decoration: InputDecoration(
-                        label: const Text('Year'),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8))),
-                    value: yearsDropdownValue,
-                    items: yearsList.map((String items) {
-                      return DropdownMenuItem(
-                        value: items,
-                        child: Text(items),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        yearsDropdownValue = newValue!;
-                        yearController.text = newValue;
-                      });
-                    })),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: DropdownButtonFormField(
-                  decoration: InputDecoration(
-                      label: const Text('Session'),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8))),
-                  value: sessionDropdownValue,
-                  items: sessionItems.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child: Text(items),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
+                    }),
+              ),
+              TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: const EdgeInsets.only(
+                        left: 50, top: 14, right: 50, bottom: 14),
+                  ),
+                  onPressed: () {
                     setState(() {
-                      sessionDropdownValue = newValue!;
-                      sessionController.text = newValue;
+                      if(_formKey.currentState!.validate()){
+                        _save();
+                      }
+
                     });
-                  }),
-            ),
-            Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: receiptNoController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      label: const Text('Receipt No.'),
-                      hintText: 'Receipt No.',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      )),
-                )),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: DropdownButtonFormField(
-                  decoration: InputDecoration(
-                      label: const Text('Amount Received?'),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8))),
-                  value: amountReceivedDropdownValue,
-                  items: amountReceivedItems.map((String items) {
-                    return DropdownMenuItem(
-                      value: items,
-                      child: Text(items),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      amountReceivedDropdownValue = newValue!;
-                      amountReceivedController.text = newValue;
-                    });
-                  }),
-            ),
-            TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.only(
-                      left: 50, top: 14, right: 50, bottom: 14),
-                ),
-                onPressed: () {
-                  setState(() {
-                    _save();
-                  });
-                },
-                child: const Text(
-                  'Add',
-                  style: TextStyle(color: Colors.white),
-                )),
-            const SizedBox(height: 20)
-          ],
+                  },
+                  child: const Text(
+                    'Add',
+                    style: TextStyle(color: Colors.white),
+                  )),
+              const SizedBox(height: 20)
+            ],
+          ),
         ),
       ),
     );

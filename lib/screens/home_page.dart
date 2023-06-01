@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hira/database_helper/database_helper.dart';
 import 'package:hira/screens/add_new.dart';
 
+import '../components/searchbar.dart';
 import 'allfamily.dart';
 
 class Homepage extends StatefulWidget {
@@ -18,6 +20,19 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              final databaseHelper = DatabaseHelper();
+              showSearch(
+                  context: context,
+                  // delegate to customize the search bar
+                  delegate: CustomSearchDelegate(databaseHelper)
+              );
+            },
+            icon: const Icon(Icons.search),
+          )
+        ],
         centerTitle: true,
         title: const Text('Insured Tracker'),
       ),
@@ -85,3 +100,4 @@ class _HomepageState extends State<Homepage> {
     );
   }
 }
+

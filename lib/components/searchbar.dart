@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../database_helper/database_helper.dart';
 
-List<Map<String, dynamic>> familyData=[];
-
-
+List<Map<String, dynamic>> familyData = [];
 
 Future<void> fetchFamilyData() async {
   final databaseHelper = DatabaseHelper();
@@ -38,8 +36,6 @@ class CustomSearchDelegate extends SearchDelegate {
       icon: const Icon(Icons.arrow_back),
     );
   }
-
-
   @override
   Widget buildResults(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
@@ -47,8 +43,7 @@ class CustomSearchDelegate extends SearchDelegate {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        }
-        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No results found'));
         } else {
           final List<Map<String, dynamic>> searchData = snapshot.data!;
@@ -57,7 +52,8 @@ class CustomSearchDelegate extends SearchDelegate {
             itemBuilder: (context, index) {
               final result = searchData[index];
               return ListTile(
-                title: Text(result['hiCode'].toString()),
+                title: Text(result['name'].toString()),
+                subtitle: Text(result['hiCode'].toString()),
               );
             },
           );
@@ -65,7 +61,6 @@ class CustomSearchDelegate extends SearchDelegate {
       },
     );
   }
-
 
   @override
   Widget buildSuggestions(BuildContext context) {
@@ -74,25 +69,23 @@ class CustomSearchDelegate extends SearchDelegate {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
-        }
-        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No results found'));
         } else {
           final List<Map<String, dynamic>> searchData = snapshot.data!;
-          return ListView.builder(
+           return ListView.builder(
             itemCount: searchData.length,
             itemBuilder: (context, index) {
               final result = searchData[index];
               return ListTile(
-                title: Text(result['hiCode'].toString()),
+                title: Text(result['name'].toString()),
+                subtitle: Text(result['hiCode'].toString()),
               );
             },
           );
+
         }
       },
     );
   }
 }
-
-
-

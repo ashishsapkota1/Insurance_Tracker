@@ -129,6 +129,8 @@ class _AddFamilyState extends State<AddFamily> {
                     validator: (value){
                       if(value == null || value.isEmpty){
                         return 'Please enter HICODE';
+                      }else if(value.length<9){
+                        return 'Must be 9 digits';
                       }
                       return null;
                     },

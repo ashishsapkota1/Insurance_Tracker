@@ -79,11 +79,10 @@ class DatabaseHelper {
   }
 
   Future<List<Map<String, dynamic>>> searchData(String searchTerm) async {
-     await openDB();
+    await openDB();
 
     return _database!.query('familyTable',
-        where: 'hiCode LIKE ?', whereArgs: ['%$searchTerm%']);
+        where: 'LOWER(hiCode) LIKE LOWER(?) OR LOWER(name) LIKE LOWER(?)',
+        whereArgs: ['%$searchTerm%', '%$searchTerm']);
   }
-
-
 }

@@ -78,11 +78,21 @@ class DatabaseHelper {
     return familyTableData + transactionDetailTableData;
   }
 
+  Future<List<Map<String, dynamic>>> getThisSessionData(String session) async {
+    await openDB();
+    final List<Map<String, dynamic>> familyTableData =
+    await _database!.query('familyTable',
+      where: 'renewalSession = ?',
+        whereArgs: [session]
+    );
+    return familyTableData;
+  }
+
   Future<List<Map<String, dynamic>>> searchData(String searchTerm) async {
     await openDB();
 
     return _database!.query('familyTable',
         where: 'LOWER(hiCode) LIKE LOWER(?) OR LOWER(name) LIKE LOWER(?)',
-        whereArgs: ['%$searchTerm%', '%$searchTerm']);
+        whereArgs: ['%$searchTerm%', '%$searchTerm%']);
   }
 }

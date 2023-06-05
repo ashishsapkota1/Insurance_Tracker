@@ -43,7 +43,7 @@ class _AddFamilyState extends State<AddFamily> {
 
     String sessionDropdownValue = '';
     if (today.isAfter(firstSession) && today.isBefore(secondSession)) {
-      sessionDropdownValue = 'Baisakh-Jestha-Asar';
+      sessionDropdownValue = 'Baishakh-Jestha-Ashadh';
     } else if (today.isAfter(secondSession) && today.isBefore(thirdSession)) {
       sessionDropdownValue = 'Shrawan-Bhadra-Ashwin';
     } else if (today.isAfter(thirdSession) && today.isBefore(forthSession)) {
@@ -67,7 +67,7 @@ class _AddFamilyState extends State<AddFamily> {
 
     var items = ['Normal', 'Aged', 'Disabled'];
     var sessionItems = [
-      'Baisakh-Jestha-Asar',
+      'Baishakh-Jestha-Ashadh',
       'Shrawan-Bhadra-Ashwin',
       'Kartik-Mangsir-Poush',
       'Magh-Falgun-Chaitra'
@@ -261,6 +261,7 @@ class _AddFamilyState extends State<AddFamily> {
                       setState(() {
                         sessionDropdownValue = newValue!;
                         sessionController.text = newValue;
+                        print(sessionController.text);
                       });
                     }),
               ),
@@ -324,6 +325,7 @@ class _AddFamilyState extends State<AddFamily> {
   }
 
   void _save() async {
+    print(sessionController);
     int result = (await helper.insertFamily(
         familyHeadController,
         membershipNoController,

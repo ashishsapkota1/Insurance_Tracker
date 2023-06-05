@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
 
 class AllFamilyPage extends StatefulWidget {
@@ -26,6 +26,23 @@ class _AllFamilyPageState extends State<AllFamilyPage> {
     });
   }
 
+  void _showAlertDialog(String title, String message) {
+    AlertDialog alertDialog =
+    AlertDialog(title: Text(title), content: Text(message));
+    showDialog(
+      context: context,
+      builder: (_) => alertDialog,
+    );
+  }
+
+  Future<void> _launchUrl(Uri url) async {
+    try {
+      await launchUrl(url);
+    } catch(_){
+      _showAlertDialog('Error', "Could not launch phone");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (familyData.isEmpty) {
@@ -40,7 +57,7 @@ class _AllFamilyPageState extends State<AllFamilyPage> {
           itemBuilder: (context, index) {
         final family = familyData[index];
         final name = family['name'];
-        final hicode = family['hiCode'];
+        final hiCode = family['hiCode'];
         final phoneNo = family['phnNo'];
         final amount = family['annualFee'];
         return Card(
@@ -51,14 +68,52 @@ class _AllFamilyPageState extends State<AllFamilyPage> {
           child: SafeArea(
             bottom: true,
             child: ListTile(
-              contentPadding:const EdgeInsets.only(bottom: 12,left: 10),
-              title: Text('Name : $name'),
+              contentPadding:const EdgeInsets.all(8),
+              title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('HiCode: $hicode'),
-                  Text('Phone No: $phoneNo'),
-                  Text('Amount: $amount'),
+                  Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Contact: $phoneNo'),
+                            Text('Amount: $amount')
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                ElevatedButton(
+                                    onPressed: (){
+                                      final Uri uri = Uri(
+                                        scheme: 'tel',
+                                        path: '+977$phoneNo',
+                                      );
+                                      _launchUrl(uri);
+                                    },
+                                    child: const Text('Call')
+                                ),
+                                const SizedBox(width: 8,),
+                                ElevatedButton(
+                                    onPressed: (){
+
+                                    },
+                                    child: const Text('Details')
+                                ),
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    )
+                    ),
                 ],
               ),
               // Add more fields as needed

@@ -36,6 +36,7 @@ dependencies:
   intl: ^0.18.1
   nepali_utils: ^3.0.3
   nepali_date_picker: ^5.3.1
+  url_launcher: ^6.1.7
   path: any
 
 

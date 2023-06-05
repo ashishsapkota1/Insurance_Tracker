@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hira/database_helper/database_helper.dart';
 import 'package:hira/screens/add_new.dart';
+import 'package:hira/screens/thisSession.dart';
 
 import '../components/searchbar.dart';
 import 'allfamily.dart';
@@ -46,8 +47,8 @@ class _HomepageState extends State<Homepage> {
               });
             },
             children: [
-              Container(),
-              AllFamilyPage(),
+              const ThisSessionPage(),
+              const AllFamilyPage(),
               Container(),
             ],
           ),

@@ -32,11 +32,12 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
     } else {
       sessionDropdownValue = 'Magh-Falgun-Chaitra';
     }
+    fetchFamilyData(today.year, sessionDropdownValue);
   }
 
-  Future<void> fetchFamilyData(String session) async {
+  Future<void> fetchFamilyData(int year, String session) async {
     final databaseHelper = DatabaseHelper();
-    final data = await databaseHelper.getThisSessionData(session);
+    final data = await databaseHelper.getThisSessionData(year, session);
     setState(() {
       familyData = data;
     });
@@ -85,9 +86,45 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
       'Magh-Falgun-Chaitra'
     ];
 
+    List<int> getYears(int year) {
+      int currentYear = NepaliDateTime.now().year;
+
+      List<int> yearsTillPresent = [];
+
+      while (year <= currentYear + 10) {
+        yearsTillPresent.add(year);
+        year++;
+      }
+
+      return yearsTillPresent;
+    }
+    int yearsDropdownValue = NepaliDateTime.now().year;
+    List<int> yearsList = getYears(2075);
+
     if (familyData.isEmpty) {
       return Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: DropdownButtonFormField(
+                decoration: InputDecoration(
+                    label: const Text('Year'),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8))),
+                value: yearsDropdownValue,
+                items: yearsList.map((int items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(items.toString()),
+                  );
+                }).toList(),
+                onChanged: (int? newValue) {
+                  setState(() {
+                    yearsDropdownValue = newValue!;
+                    fetchFamilyData(yearsDropdownValue, sessionDropdownValue);
+                  });
+                }),
+          ),
           Padding(
             padding: const EdgeInsets.all(10),
             child: DropdownButtonFormField(
@@ -105,7 +142,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                 onChanged: (String? newValue) {
                   setState(() {
                     sessionDropdownValue = newValue!;
-                    fetchFamilyData(sessionDropdownValue);
+                    fetchFamilyData(yearsDropdownValue, sessionDropdownValue);
                   });
                 }),
           ),
@@ -115,9 +152,31 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
         ],
       );
     } else {
-      return SafeArea(
+      return SingleChildScrollView(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                      label: const Text('Year'),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                  value: yearsDropdownValue,
+                  items: yearsList.map((int items) {
+                    return DropdownMenuItem(
+                      value: items,
+                      child: Text(items.toString()),
+                    );
+                  }).toList(),
+                  onChanged: (int? newValue) {
+                    setState(() {
+                      yearsDropdownValue = newValue!;
+                      fetchFamilyData(yearsDropdownValue, sessionDropdownValue);
+                    });
+                  }),
+            ),
             Padding(
               padding: const EdgeInsets.all(10),
               child: DropdownButtonFormField(
@@ -135,85 +194,88 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                   onChanged: (String? newValue) {
                       setState(() {
                       sessionDropdownValue = newValue!;
-                      fetchFamilyData(sessionDropdownValue);
+                      fetchFamilyData(yearsDropdownValue, sessionDropdownValue);
                       });
                   }),
               ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 60.0),
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: familyData.length,
-                itemBuilder: (context, index) {
-                  final family = familyData[index];
-                  final name = family['name'];
-                  final hiCode = family['hiCode'];
-                  final phoneNo = family['phnNo'];
-                  final amount = family['annualFee'];
-                  return Card(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                        side: const BorderSide(color: Colors.blueAccent),
-                        borderRadius: BorderRadius.circular(8)),
-                    child: SafeArea(
-                      bottom: true,
-                      child: ListTile(
-                        contentPadding:const EdgeInsets.all(8),
-                        title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                            Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                  Padding(
+                  padding: const EdgeInsets.only(bottom: 60.0),
+                  child: SafeArea(
+                    bottom: true,
+                    child: ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: familyData.length,
+                      itemBuilder: (context, index) {
+                        final family = familyData[index];
+                        final name = family['name'];
+                        final hiCode = family['hiCode'];
+                        final phoneNo = family['phnNo'];
+                        final amount = family['annualFee'];
+                        return Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                              side: const BorderSide(color: Colors.blueAccent),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: ListTile(
+                            contentPadding:const EdgeInsets.all(8),
+                            title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                                Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('Contact: $phoneNo'),
-                                        Text('Amount: $amount')
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Row(
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            ElevatedButton(
-                                                onPressed: (){
-                                                  final Uri uri = Uri(
-                                                    scheme: 'tel',
-                                                    path: '+977$phoneNo',
-                                                  );
-                                                  _launchUrl(uri);
-                                                },
-                                                child: const Text('Call')
-                                            ),
-                                            const SizedBox(width: 8,),
-                                            ElevatedButton(
-                                                onPressed: (){
+                                            Text('Contact: $phoneNo'),
+                                            Text('Amount: $amount')
+                                          ],
+                                        ),
+                                        Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                ElevatedButton(
+                                                    onPressed: (){
+                                                      final Uri uri = Uri(
+                                                        scheme: 'tel',
+                                                        path: '+977$phoneNo',
+                                                      );
+                                                      _launchUrl(uri);
+                                                    },
+                                                    child: const Text('Call')
+                                                ),
+                                                const SizedBox(width: 8,),
+                                                ElevatedButton(
+                                                    onPressed: (){
 
-                                                },
-                                                child: const Text('Details')
-                                            ),
+                                                    },
+                                                    child: const Text('Details')
+                                                ),
+                                              ],
+                                            )
                                           ],
                                         )
                                       ],
                                     )
-                                  ],
-                                )
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        // Add more fields as needed
-                      ),
+                            // Add more fields as needed
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
               ),
-            ),
+              
+
           ],
         ),
       );

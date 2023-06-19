@@ -72,18 +72,50 @@ class DatabaseHelper {
 
     final List<Map<String, dynamic>> familyTableData =
         await _database!.query('familyTable');
-    final List<Map<String, dynamic>> transactionDetailTableData =
-        await _database!.query('transactionDetailTable');
 
-    return familyTableData + transactionDetailTableData;
+    return familyTableData;
   }
 
-  Future<List<Map<String, dynamic>>> getThisSessionData(String session) async {
+  Future<List<Map<String, dynamic>>> getLapsedFamily() async {
+    await openDB();
+    NepaliDateTime today = NepaliDateTime.now();
+    List<String> months = [
+      'Baishakh',
+      'Jestha',
+      'Ashadh',
+      'Shrawan',
+      'Bhadra',
+      'Ashwin',
+      'Kartik',
+      'Mangsir',
+      'Poush',
+      'Magh',
+      'Falgun',
+      'Chaitra'
+    ];
+    final List<Map<String, dynamic>> allFamilyData =
+        await _database!.query('familyTable');
+    List<Map<String, dynamic>> lapsedFamily = [];
+    allFamilyData.map((Map<String, dynamic> fam) {
+          List<String> words = fam['lastRenewalSession'].toString().split("-");
+          NepaliDateTime lastRenewalDate = NepaliDateTime(
+            fam['lastRenewalYear']+1,
+            months.indexOf(words[0]) + 2,
+            0
+          );
+          if (today.isAfter(lastRenewalDate)) {
+            lapsedFamily.add(fam);
+          }
+    });
+    return lapsedFamily;
+  }
+
+  Future<List<Map<String, dynamic>>> getThisSessionData(int year, String session) async {
     await openDB();
     final List<Map<String, dynamic>> familyTableData =
     await _database!.query('familyTable',
-      where: 'renewalSession = ?',
-        whereArgs: [session]
+      where: '(lastRenewalYear = ? AND renewalSession = ?) OR (lastRenewalYear = ? AND renewalSession = ?)',
+        whereArgs: [year, session, year-1, session]
     );
     return familyTableData;
   }

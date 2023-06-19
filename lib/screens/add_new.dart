@@ -34,6 +34,21 @@ class _AddFamilyState extends State<AddFamily> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void dispose(){
+    membershipNoController.dispose();
+    phoneNoController.dispose();
+    noOfMembersController.dispose();
+    annualFeeController.dispose();
+    receiptNoController.dispose();
+    familyTypeController.dispose();
+    transactionTypeController.dispose();
+    yearController.dispose();
+    sessionController.dispose();
+    amountReceivedController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     NepaliDateTime today = NepaliDateTime.now();
     NepaliDateTime firstSession = NepaliDateTime(today.year, 1, 1);
@@ -51,19 +66,14 @@ class _AddFamilyState extends State<AddFamily> {
     } else {
       sessionDropdownValue = 'Magh-Falgun-Chaitra';
     }
-    sessionController.text = sessionDropdownValue;
 
     String familyTypeDropdownValue = 'Normal';
-    familyTypeController.text = familyTypeDropdownValue;
 
     String yearsDropdownValue = NepaliDateTime.now().year.toString();
-    yearController.text = yearsDropdownValue;
 
     String transactionTypeDropdownValue = 'New';
-    transactionTypeController.text = transactionTypeDropdownValue;
 
     String amountReceivedDropdownValue = 'Yes';
-    amountReceivedController.text = amountReceivedDropdownValue;
 
     var items = ['Normal', 'Aged', 'Disabled'];
     var sessionItems = [
@@ -129,7 +139,7 @@ class _AddFamilyState extends State<AddFamily> {
                     validator: (value){
                       if(value == null || value.isEmpty){
                         return 'Please enter HICODE';
-                      }else if(value.length<9){
+                      }else if(value.length<9 && value.length>9){
                         return 'Must be 9 digits';
                       }
                       return null;
@@ -261,7 +271,6 @@ class _AddFamilyState extends State<AddFamily> {
                       setState(() {
                         sessionDropdownValue = newValue!;
                         sessionController.text = newValue;
-                        print(sessionController.text);
                       });
                     }),
               ),
@@ -280,6 +289,11 @@ class _AddFamilyState extends State<AddFamily> {
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: DropdownButtonFormField(
+                    validator: (value){
+                      if(value == null || value.isEmpty){
+                        return 'Please select an item';
+                      }
+                    },
                     decoration: InputDecoration(
                         label: const Text('Amount Received?'),
                         border: OutlineInputBorder(
@@ -325,7 +339,8 @@ class _AddFamilyState extends State<AddFamily> {
   }
 
   void _save() async {
-    print(sessionController);
+
+
     int result = (await helper.insertFamily(
         familyHeadController,
         membershipNoController,
@@ -340,6 +355,17 @@ class _AddFamilyState extends State<AddFamily> {
         amountReceivedController));
     if (result != 0) {
       _showAlertDialog('Status', "New family added successfully");
+      familyHeadController.clear();
+      membershipNoController.clear();
+      phoneNoController.clear();
+      noOfMembersController.clear();
+      annualFeeController.clear();
+      receiptNoController.clear();
+      familyTypeController.clear();
+      transactionTypeController.clear();
+      yearController.clear();
+      sessionController.clear();
+      amountReceivedController.clear();
     } else {
       _showAlertDialog('Status', "Failed to add new family.");
     }

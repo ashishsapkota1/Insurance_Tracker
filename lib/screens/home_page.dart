@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hira/database_helper/database_helper.dart';
 import 'package:hira/screens/add_new.dart';
+import 'package:hira/screens/lapsed.dart';
 import 'package:hira/screens/thisSession.dart';
 
 import '../components/searchbar.dart';
@@ -46,10 +47,10 @@ class _HomepageState extends State<Homepage> {
                 _currentIndex = index;
               });
             },
-            children: [
-              const ThisSessionPage(),
-              const AllFamilyPage(),
-              Container(),
+            children: const [
+              ThisSessionPage(),
+              AllFamilyPage(),
+              LapsedPage(),
             ],
           ),
           Positioned(

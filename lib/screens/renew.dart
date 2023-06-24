@@ -1,41 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:hira/database_helper/transaction.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:hira/database_helper/database_helper.dart';
-import 'package:hira/database_helper/family.dart';
 import 'package:sqflite/sqflite.dart';
 
-class AddFamily extends StatefulWidget {
-  const AddFamily({Key? key}) : super(key: key);
+class Renew extends StatefulWidget {
+  final String name;
+  final String hiCode;
+  final String amount;
+
+  const Renew({super.key, required this.name, required this.hiCode, required this.amount});
 
   @override
-  State<AddFamily> createState() => _AddFamilyState();
+  State<Renew> createState() => _RenewState();
 }
 
-class _AddFamilyState extends State<AddFamily> {
+class _RenewState extends State<Renew> {
 
-  final Family family = Family(0, '', '', 0, '', '', '', 0, '');
-  final TransactionDetail transactionDetail =
-      TransactionDetail(0, 0, '', '', '', '', '', '');
   DatabaseHelper helper = DatabaseHelper();
   Database? _database;
 
   String sessionDropdownValue = '';
-  String familyTypeDropdownValue = '';
   String yearsDropdownValue = '';
-  String transactionTypeDropdownValue = '';
   String amountReceivedDropdownValue = '';
 
   NepaliDateTime today = NepaliDateTime.now();
 
-  TextEditingController familyHeadController = TextEditingController();
-  TextEditingController membershipNoController = TextEditingController();
-  TextEditingController phoneNoController = TextEditingController();
-  TextEditingController noOfMembersController = TextEditingController();
-  TextEditingController annualFeeController = TextEditingController();
   TextEditingController receiptNoController = TextEditingController();
-  TextEditingController familyTypeController = TextEditingController(text: "Normal");
-  TextEditingController transactionTypeController = TextEditingController(text: "New");
   TextEditingController yearController = TextEditingController(text: NepaliDateTime.now().year.toString());
   TextEditingController sessionController = TextEditingController();
   TextEditingController amountReceivedController = TextEditingController(text: "Yes");
@@ -44,13 +34,7 @@ class _AddFamilyState extends State<AddFamily> {
 
   @override
   void dispose(){
-    membershipNoController.dispose();
-    phoneNoController.dispose();
-    noOfMembersController.dispose();
-    annualFeeController.dispose();
     receiptNoController.dispose();
-    familyTypeController.dispose();
-    transactionTypeController.dispose();
     yearController.dispose();
     sessionController.dispose();
     amountReceivedController.dispose();
@@ -78,24 +62,18 @@ class _AddFamilyState extends State<AddFamily> {
       sessionDropdownValue = 'Magh-Falgun-Chaitra';
       sessionController.text = 'Magh-Falgun-Chaitra';
     }
-    familyTypeDropdownValue = 'Normal';
     yearsDropdownValue = NepaliDateTime.now().year.toString();
-    transactionTypeDropdownValue = 'New';
     amountReceivedDropdownValue = 'Yes';
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    var items = ['Normal', 'Aged', 'Disabled'];
     var sessionItems = [
       'Baishakh-Jestha-Ashadh',
       'Shrawan-Bhadra-Ashwin',
       'Kartik-Mangsir-Poush',
       'Magh-Falgun-Chaitra'
     ];
-    var transactionTypeItems = ['New', 'Renew'];
     var amountReceivedItems = ['Yes', 'No'];
     List<String> getYears(int year) {
       int currentYear = NepaliDateTime.now().year;
@@ -115,7 +93,7 @@ class _AddFamilyState extends State<AddFamily> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Insured Tracker'),
+        title: const Text('Renew Insurance'),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -132,13 +110,8 @@ class _AddFamilyState extends State<AddFamily> {
               Padding(
                   padding: const EdgeInsets.all(10),
                   child: TextFormField(
-                    validator: (value){
-                      if(value==null || value.isEmpty){
-                        return 'Please enter Name';
-                      }
-                      return null;
-                    },
-                    controller: familyHeadController,
+                    readOnly: true,
+                    initialValue: widget.name,
                     decoration: InputDecoration(
                         label: const Text('Family Head'),
                         hintText: 'Name of Head of the Family',
@@ -149,15 +122,8 @@ class _AddFamilyState extends State<AddFamily> {
               Padding(
                   padding: const EdgeInsets.all(10),
                   child: TextFormField(
-                    validator: (value){
-                      if(value == null || value.isEmpty){
-                        return 'Please enter HICODE';
-                      }else if(value.length<9 || value.length>9){
-                        return 'Must be exactly 9 digits';
-                      }
-                      return null;
-                    },
-                    controller: membershipNoController,
+                    initialValue: widget.hiCode,
+                    readOnly: true,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         label: const Text('Membership No.'),
@@ -169,31 +135,8 @@ class _AddFamilyState extends State<AddFamily> {
               Padding(
                   padding: const EdgeInsets.all(10),
                   child: TextFormField(
-                    controller: phoneNoController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        label: const Text('Phone No.'),
-                        hintText: 'Phone No.',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        )),
-                  )),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    controller: noOfMembersController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        label: const Text('No. of members'),
-                        hintText: 'No. of members',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        )),
-                  )),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    controller: annualFeeController,
+                    initialValue: widget.amount,
+                    readOnly: true,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         label: const Text('Annual Fee'),
@@ -202,50 +145,10 @@ class _AddFamilyState extends State<AddFamily> {
                           borderRadius: BorderRadius.circular(8),
                         )),
                   )),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                          label: const Text('Family Type'),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8))),
-                      value: familyTypeDropdownValue,
-                      items: items.map((String item) {
-                        return DropdownMenuItem(
-                          value: item,
-                          child: Text(item),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          familyTypeDropdownValue = newValue!;
-                          familyTypeController.text = newValue;
-                        });
-                      })),
               const Text(
                 'Transaction Information',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                          label: const Text('Transaction type'),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8))),
-                      value: transactionTypeDropdownValue,
-                      items: transactionTypeItems.map((String item) {
-                        return DropdownMenuItem(
-                          value: item,
-                          child: Text(item),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          transactionTypeDropdownValue = newValue!;
-                          transactionTypeController.text = newValue;
-                        });
-                      })),
               Padding(
                   padding: const EdgeInsets.all(10),
                   child: DropdownButtonFormField(
@@ -353,39 +256,27 @@ class _AddFamilyState extends State<AddFamily> {
   }
 
   void _save() async {
-    int result = (await helper.insertFamily(
-        familyHeadController,
-        membershipNoController,
-        phoneNoController,
-        noOfMembersController,
-        annualFeeController,
+    int result = (await helper.renewInsurance(
+        widget.hiCode,
+        widget.amount,
         receiptNoController,
-        familyTypeController,
-        transactionTypeController,
         yearController,
         sessionController,
         amountReceivedController));
     if (result != 0) {
-      _showAlertDialog('Status', "New family added successfully");
-      familyHeadController.clear();
-      membershipNoController.clear();
-      phoneNoController.clear();
-      noOfMembersController.clear();
-      annualFeeController.clear();
+      _showAlertDialog('Status', "Insurance renewed successfully.");
       receiptNoController.clear();
-      familyTypeController.clear();
-      transactionTypeController.clear();
       yearController.clear();
       sessionController.clear();
       amountReceivedController.clear();
     } else {
-      _showAlertDialog('Status', "Failed to add new family.");
+      _showAlertDialog('Status', "Failed to renew insurance.");
     }
   }
 
   void _showAlertDialog(String title, String message) {
     AlertDialog alertDialog =
-        AlertDialog(title: Text(title), content: Text(message));
+    AlertDialog(title: Text(title), content: Text(message));
     showDialog(
       context: context,
       builder: (_) => alertDialog,

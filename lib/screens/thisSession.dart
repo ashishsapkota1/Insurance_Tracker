@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
 import 'package:nepali_utils/nepali_utils.dart';
+import 'package:hira/screens/renew.dart';
 
 class ThisSessionPage extends StatefulWidget {
   const ThisSessionPage({Key? key}) : super(key: key);
@@ -12,6 +13,8 @@ class ThisSessionPage extends StatefulWidget {
 
 class _ThisSessionPageState extends State<ThisSessionPage> {
   List<Map<String, dynamic>> familyData = [];
+  String sessionDropdownValue = '';
+  int yearsDropdownValue = 0;
 
   @override
   void initState() {
@@ -22,7 +25,6 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
     NepaliDateTime thirdSession = NepaliDateTime(today.year, 7, 1);
     NepaliDateTime forthSession = NepaliDateTime(today.year, 10, 1);
 
-    String sessionDropdownValue = '';
     if (today.isAfter(firstSession) && today.isBefore(secondSession)) {
       sessionDropdownValue = 'Baishakh-Jestha-Ashadh';
     } else if (today.isAfter(secondSession) && today.isBefore(thirdSession)) {
@@ -32,7 +34,8 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
     } else {
       sessionDropdownValue = 'Magh-Falgun-Chaitra';
     }
-    fetchFamilyData(today.year, sessionDropdownValue);
+    yearsDropdownValue = NepaliDateTime.now().year;
+    fetchFamilyData(yearsDropdownValue, sessionDropdownValue);
   }
 
   Future<void> fetchFamilyData(int year, String session) async {
@@ -62,22 +65,6 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
 
   @override
   Widget build(BuildContext context) {
-    NepaliDateTime today = NepaliDateTime.now();
-    NepaliDateTime firstSession = NepaliDateTime(today.year, 1, 1);
-    NepaliDateTime secondSession = NepaliDateTime(today.year, 4, 1);
-    NepaliDateTime thirdSession = NepaliDateTime(today.year, 7, 1);
-    NepaliDateTime forthSession = NepaliDateTime(today.year, 10, 1);
-
-    String sessionDropdownValue = '';
-    if (today.isAfter(firstSession) && today.isBefore(secondSession)) {
-      sessionDropdownValue = 'Baishakh-Jestha-Ashadh';
-    } else if (today.isAfter(secondSession) && today.isBefore(thirdSession)) {
-      sessionDropdownValue = 'Shrawan-Bhadra-Ashwin';
-    } else if (today.isAfter(thirdSession) && today.isBefore(forthSession)) {
-      sessionDropdownValue = 'Kartik-Mangsir-Poush';
-    } else {
-      sessionDropdownValue = 'Magh-Falgun-Chaitra';
-    }
 
     var sessionItems = [
       'Baishakh-Jestha-Ashadh',
@@ -91,15 +78,15 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
 
       List<int> yearsTillPresent = [];
 
-      while (year <= currentYear + 10) {
+      while (year <= currentYear + 1) {
         yearsTillPresent.add(year);
         year++;
       }
 
       return yearsTillPresent;
     }
-    int yearsDropdownValue = NepaliDateTime.now().year;
-    List<int> yearsList = getYears(2075);
+    // int yearsDropdownValue = NepaliDateTime.now().year;
+    List<int> yearsList = getYears(NepaliDateTime.now().year - 1);
 
     if (familyData.isEmpty) {
       return Column(
@@ -219,6 +206,9 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                               side: const BorderSide(color: Colors.blueAccent),
                               borderRadius: BorderRadius.circular(8)),
                           child: ListTile(
+                            onTap: (){
+
+                            },
                             contentPadding:const EdgeInsets.all(8),
                             title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                             subtitle: Column(
@@ -254,9 +244,12 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                                                 const SizedBox(width: 8,),
                                                 ElevatedButton(
                                                     onPressed: (){
-
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => Renew(name: name.toString(), hiCode: hiCode.toString(), amount: amount.toString())),
+                                                      );
                                                     },
-                                                    child: const Text('Details')
+                                                    child: const Text('Renew')
                                                 ),
                                               ],
                                             )

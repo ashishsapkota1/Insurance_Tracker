@@ -37,77 +37,73 @@ class DatabaseHelper {
     _database = await openDB();
     UserRepo userRepo = UserRepo();
     userRepo.createDb(_database);
-    // try {
-    Family familyData = Family(
+    try {
+      Family familyData = Family(
+          int.tryParse(membershipNoController.text) ?? 0,
+          familyHeadController.text,
+          phoneNoController.text,
+          int.tryParse(noOfMembersController.text) ?? 0,
+          sessionController.text,
+          annualFeeController.text,
+          familyTypeController.text,
+          (int.tryParse(yearController.text)) ?? 0,
+          sessionController.text);
+
+      TransactionDetail transactionData = TransactionDetail(
         int.tryParse(membershipNoController.text) ?? 0,
-        familyHeadController.text,
-        phoneNoController.text,
-        int.tryParse(noOfMembersController.text) ?? 0,
+        int.tryParse(yearController.text) ?? 0,
         sessionController.text,
         annualFeeController.text,
-        familyTypeController.text,
-        (int.tryParse(yearController.text)) ?? 0,
-        sessionController.text);
+        NepaliDateTime.now().toString(),
+        amountReceivedController.text,
+        transactionTypeController.text,
+        receiptNoController.text,
+      );
+      await _database?.insert('familyTable', familyData.toMap());
+      await _database?.insert('transactionDetailTable', transactionData.toMap());
+      return 1;
+    } catch(error){
+      return 0;
+    }
+  }
 
-    TransactionDetail transactionData = TransactionDetail(
-      int.tryParse(membershipNoController.text) ?? 0,
-      int.tryParse(yearController.text) ?? 0,
-      sessionController.text,
-      annualFeeController.text,
-      NepaliDateTime.now().toString(),
-      amountReceivedController.text,
-      transactionTypeController.text,
-      receiptNoController.text,
-    );
-    _database?.insert('familyTable', familyData.toMap());
-    _database?.insert('transactionDetailTable', transactionData.toMap());
-    return 1;
-    // } catch(error){
-    //   return 0;
-    // }
+  Future<int> renewInsurance(
+      String hiCode,
+      String amount,
+      TextEditingController receiptNoController,
+      TextEditingController yearController,
+      TextEditingController sessionController,
+      TextEditingController amountReceivedController) async {
+    _database = await openDB();
+    UserRepo userRepo = UserRepo();
+    userRepo.createDb(_database);
+    try {
+      TransactionDetail transactionData = TransactionDetail(
+        int.tryParse(hiCode) ?? 0,
+        int.tryParse(yearController.text) ?? 0,
+        sessionController.text,
+        amount,
+        NepaliDateTime.now().toString(),
+        amountReceivedController.text,
+        "Renew",
+        receiptNoController.text,
+      );
+      await _database?.insert('transactionDetailTable', transactionData.toMap());
+      return 1;
+    } catch(error){
+      return 0;
+    }
   }
 
   Future<List<Map<String, dynamic>>> getTableData() async {
     await openDB();
 
     final List<Map<String, dynamic>> familyTableData =
-        await _database!.query('familyTable');
+        await _database!.query('familyTable',
+          orderBy: 'name ASC'
+        );
 
     return familyTableData;
-  }
-
-  Future<List<Map<String, dynamic>>> getLapsedFamily() async {
-    await openDB();
-    NepaliDateTime today = NepaliDateTime.now();
-    List<String> months = [
-      'Baishakh',
-      'Jestha',
-      'Ashadh',
-      'Shrawan',
-      'Bhadra',
-      'Ashwin',
-      'Kartik',
-      'Mangsir',
-      'Poush',
-      'Magh',
-      'Falgun',
-      'Chaitra'
-    ];
-    final List<Map<String, dynamic>> allFamilyData =
-        await _database!.query('familyTable');
-    List<Map<String, dynamic>> lapsedFamily = [];
-    allFamilyData.map((Map<String, dynamic> fam) {
-          List<String> words = fam['lastRenewalSession'].toString().split("-");
-          NepaliDateTime lastRenewalDate = NepaliDateTime(
-            fam['lastRenewalYear']+1,
-            months.indexOf(words[0]) + 2,
-            0
-          );
-          if (today.isAfter(lastRenewalDate)) {
-            lapsedFamily.add(fam);
-          }
-    });
-    return lapsedFamily;
   }
 
   Future<List<Map<String, dynamic>>> getThisSessionData(int year, String session) async {

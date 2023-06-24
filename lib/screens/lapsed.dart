@@ -20,10 +20,38 @@ class _LapsedPageState extends State<LapsedPage> {
   }
 
   Future<void> fetchFamilyData() async {
+    NepaliDateTime today = NepaliDateTime.now();
+    List<String> months = [
+      'Baishakh',
+      'Jestha',
+      'Ashadh',
+      'Shrawan',
+      'Bhadra',
+      'Ashwin',
+      'Kartik',
+      'Mangsir',
+      'Poush',
+      'Magh',
+      'Falgun',
+      'Chaitra'
+    ];
     final databaseHelper = DatabaseHelper();
-    final data = await databaseHelper.getLapsedFamily();
+    final data = await databaseHelper.getTableData();
+    List<Map<String, dynamic>> lapsedFamily = [];
+    for (var fam in data) {
+      List<String> words = fam['lastRenewalSession'].toString().split("-");
+      int monthNumber = months.indexOf(words[2])+1 == 12 ? 1 : months.indexOf(words[2])+2;
+      NepaliDateTime lastRenewalDate = NepaliDateTime(
+          fam['lastRenewalYear']+1,
+          monthNumber,
+          0
+      );
+      if (today.isAfter(lastRenewalDate)) {
+        lapsedFamily.add(fam);
+      }
+    }
     setState(() {
-      familyData = data;
+      familyData = lapsedFamily;
     });
   }
 

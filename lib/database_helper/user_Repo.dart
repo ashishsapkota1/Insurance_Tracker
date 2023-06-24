@@ -9,6 +9,6 @@ class UserRepo{
     await db?.execute(
         'CREATE TABLE IF NOT EXISTS transactionDetailTable(id INTEGER PRIMARY KEY AUTOINCREMENT, family INTEGER, '
             'year INTEGER, session TEXT, amount TEXT, dateOfTransaction TEXT, '
-            'isAmountReceived TEXT, transactionType TEXT, receiptNo TEXT NOT NULL)');
+            'isAmountReceived TEXT, transactionType TEXT, receiptNo TEXT)');
   }
 }

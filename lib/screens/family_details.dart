@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
+import '../database_helper/family.dart';
 
 class FamilyDetailsPage extends StatefulWidget {
   final int hiCode;
@@ -31,7 +32,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
 
   void _showAlertDialog(String title, String message) {
     AlertDialog alertDialog =
-    AlertDialog(title: Text(title), content: Text(message));
+        AlertDialog(title: Text(title), content: Text(message));
     showDialog(
       context: context,
       builder: (_) => alertDialog,
@@ -41,16 +42,246 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
   Future<void> _launchUrl(Uri url) async {
     try {
       await launchUrl(url);
-    } catch(_){
+    } catch (_) {
       _showAlertDialog('Error', "Could not launch phone");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Hello'),
-    );
+    if (familyData.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Family Details'),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      final String name = familyData['family']['name'].toString();
+      final int memNo = familyData['family']['hiCode'];
+      final int famNo = familyData['family']['membersNo'];
+      final String contact = familyData['family']['phnNo'];
+      final String type = familyData['family']['type'];
+      final String address = familyData['family']['address'];
+      final int renewalYear = familyData['family']['lastRenewalYear'];
+      final String renewalSession = familyData['family']['lastRenewalSession'];
+      final List<dynamic> transaction = familyData['transactions'];
+
+      return Scaffold(
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.black),
+          title: const Text(
+            'Details',
+            style: TextStyle(color: Colors.black),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.grey[200],
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Container(
+                  height: 300,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black)),
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Text(
+                          name,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: [
+                              const Text(
+                                'Membership No.',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text(
+                                memNo.toString(),
+                                style: const TextStyle(fontSize: 20),
+                              )
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              const Text(
+                                'No. of members.',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text(
+                                famNo.toString(),
+                                style: const TextStyle(fontSize: 20),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Contact',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              GestureDetector(
+                                  onTap: () {
+                                    final Uri uri = Uri(
+                                      scheme: 'tel',
+                                      path: '+977$contact',
+                                    );
+                                    _launchUrl(uri);
+                                  },
+                                  child: Text(
+                                    contact,
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline),
+                                  ))
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              const Text(
+                                'Type',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text(
+                                type,
+                                style: const TextStyle(fontSize: 20),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Address',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text(
+                                address,
+                                style: const TextStyle(fontSize: 20),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Last Renewal',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              Text(
+                                '$renewalYear-$renewalSession'.toString(),
+                                style: const TextStyle(fontSize: 20),
+                              )
+                            ],
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              const Text(
+                'Renewals',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Expanded(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: transaction.length,
+                      itemBuilder: (context, index) {
+                        final transactions = transaction[index];
+                        final int renewalYear = transactions['year'];
+                        final String renewalSession = transactions['session'];
+                        final String receiptNo = transactions['receiptNo'];
+                        final String amount = transactions['amount'];
+                        final String date = transactions['dateOfTransaction'];
+                        final DateTime renewalDate = DateTime.parse(date);
+                        final String onlyDate =
+                            '${renewalDate.year.toString()}-${renewalDate.month.toString()}-${renewalDate.day.toString()}';
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(width: 2),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            title: Text(
+                              '$renewalYear-$renewalSession'.toString(),
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                            subtitle: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Receipt No: $receiptNo'),
+                                    Text('Amount: $amount')
+                                  ],
+                                ),
+                                Row(
+                                  children: [Text('Date: $onlyDate')],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('Amount Received?'),
+                                    if (transactions['isAmountReceived'] == 'Yes')
+                                      Image.asset('assets/tick.png', width: 30, height: 30), // Display check SVG image
+                                    if (transactions['isAmountReceived'] == 'No')
+                                      Image.asset('assets/cross.png', width: 30, height: 30),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }))
+            ],
+          ),
+        ),
+      );
+    }
   }
 }
 

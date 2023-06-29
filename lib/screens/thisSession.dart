@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hira/screens/family_details.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
 import 'package:nepali_utils/nepali_utils.dart';
@@ -207,7 +208,10 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                               borderRadius: BorderRadius.circular(8)),
                           child: ListTile(
                             onTap: (){
-
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode)),
+                              );
                             },
                             contentPadding:const EdgeInsets.all(8),
                             title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
@@ -243,6 +247,9 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                                                 ),
                                                 const SizedBox(width: 8,),
                                                 ElevatedButton(
+                                                    style: ButtonStyle(
+                                                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF5dbea3))
+                                                    ),
                                                     onPressed: (){
                                                       Navigator.push(
                                                         context,

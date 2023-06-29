@@ -14,7 +14,7 @@ class AddFamily extends StatefulWidget {
 
 class _AddFamilyState extends State<AddFamily> {
 
-  final Family family = Family(0, '', '', 0, '', '', '', 0, '');
+  final Family family = Family(0, '', '', 0, '', '', '', 0, '', '');
   final TransactionDetail transactionDetail =
       TransactionDetail(0, 0, '', '', '', '', '', '');
   DatabaseHelper helper = DatabaseHelper();
@@ -31,6 +31,7 @@ class _AddFamilyState extends State<AddFamily> {
   TextEditingController familyHeadController = TextEditingController();
   TextEditingController membershipNoController = TextEditingController();
   TextEditingController phoneNoController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
   TextEditingController noOfMembersController = TextEditingController();
   TextEditingController annualFeeController = TextEditingController();
   TextEditingController receiptNoController = TextEditingController();
@@ -174,6 +175,17 @@ class _AddFamilyState extends State<AddFamily> {
                     decoration: InputDecoration(
                         label: const Text('Phone No.'),
                         hintText: 'Phone No.',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        )),
+                  )),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: addressController,
+                    decoration: InputDecoration(
+                        label: const Text('Address'),
+                        hintText: 'Address',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -357,6 +369,7 @@ class _AddFamilyState extends State<AddFamily> {
         familyHeadController,
         membershipNoController,
         phoneNoController,
+        addressController,
         noOfMembersController,
         annualFeeController,
         receiptNoController,
@@ -370,14 +383,10 @@ class _AddFamilyState extends State<AddFamily> {
       familyHeadController.clear();
       membershipNoController.clear();
       phoneNoController.clear();
+      addressController.clear();
       noOfMembersController.clear();
       annualFeeController.clear();
       receiptNoController.clear();
-      familyTypeController.clear();
-      transactionTypeController.clear();
-      yearController.clear();
-      sessionController.clear();
-      amountReceivedController.clear();
     } else {
       _showAlertDialog('Status', "Failed to add new family.");
     }

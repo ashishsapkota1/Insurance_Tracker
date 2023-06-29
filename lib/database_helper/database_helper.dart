@@ -26,6 +26,7 @@ class DatabaseHelper {
       TextEditingController familyHeadController,
       TextEditingController membershipNoController,
       TextEditingController phoneNoController,
+      TextEditingController addressController,
       TextEditingController noOfMembersController,
       TextEditingController annualFeeController,
       TextEditingController receiptNoController,
@@ -47,7 +48,9 @@ class DatabaseHelper {
           annualFeeController.text,
           familyTypeController.text,
           (int.tryParse(yearController.text)) ?? 0,
-          sessionController.text);
+          sessionController.text,
+          addressController.text
+      );
 
       TransactionDetail transactionData = TransactionDetail(
         int.tryParse(membershipNoController.text) ?? 0,
@@ -78,6 +81,18 @@ class DatabaseHelper {
     UserRepo userRepo = UserRepo();
     userRepo.createDb(_database);
     try {
+      Family familyData = Family(
+          0,
+          '',
+          '',
+          0,
+          sessionController.text,
+          '',
+          '',
+          (int.tryParse(yearController.text)) ?? 0,
+          sessionController.text,
+          ''
+      );
       TransactionDetail transactionData = TransactionDetail(
         int.tryParse(hiCode) ?? 0,
         int.tryParse(yearController.text) ?? 0,
@@ -89,6 +104,10 @@ class DatabaseHelper {
         receiptNoController.text,
       );
       await _database?.insert('transactionDetailTable', transactionData.toMap());
+      await _database?.update('familyTable', familyData.updateFamilyWhileRenew(),
+        where: 'hiCode = ?',
+        whereArgs: [hiCode],
+      );
       return 1;
     } catch(error){
       return 0;
@@ -106,12 +125,36 @@ class DatabaseHelper {
     return familyTableData;
   }
 
+
+  Future<Map<String, dynamic>> getOneFamily(int hiCode) async {
+    await openDB();
+
+    final List<Map<String, dynamic>> familyTableData =
+      await _database!.query('familyTable',
+        where: 'hiCode = ?',
+        whereArgs: [hiCode],
+      );
+    final List<Map<String, dynamic>> allTransactions =
+      await _database!.query('transactionDetailTable',
+        where: 'family = ?',
+        whereArgs: [hiCode],
+        orderBy: 'year DESC'
+      );
+    final Map<String, dynamic> oneFamily = {
+      'family': familyTableData[0],
+      'transactions': allTransactions
+    };
+    return oneFamily;
+  }
+
+
   Future<List<Map<String, dynamic>>> getThisSessionData(int year, String session) async {
     await openDB();
     final List<Map<String, dynamic>> familyTableData =
     await _database!.query('familyTable',
       where: '(lastRenewalYear = ? AND renewalSession = ?) OR (lastRenewalYear = ? AND renewalSession = ?)',
-        whereArgs: [year, session, year-1, session]
+        whereArgs: [year, session, year-1, session],
+      orderBy: 'name ASC'
     );
     return familyTableData;
   }

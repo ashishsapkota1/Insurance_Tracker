@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hira/screens/family_details.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
 
@@ -68,6 +69,12 @@ class _AllFamilyPageState extends State<AllFamilyPage> {
           child: SafeArea(
             bottom: true,
             child: ListTile(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode)),
+                );
+              },
               contentPadding:const EdgeInsets.all(8),
               title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
               subtitle: Column(

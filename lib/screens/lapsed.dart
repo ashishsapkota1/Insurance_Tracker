@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hira/screens/renew.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
 import 'package:nepali_utils/nepali_utils.dart';
@@ -138,10 +139,16 @@ class _LapsedPageState extends State<LapsedPage> {
                                             ),
                                             const SizedBox(width: 8,),
                                             ElevatedButton(
+                                                style: ButtonStyle(
+                                                    backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF5dbea3))
+                                                ),
                                                 onPressed: (){
-
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => Renew(name: name.toString(), hiCode: hiCode.toString(), amount: amount.toString())),
+                                                  );
                                                 },
-                                                child: const Text('Details')
+                                                child: const Text('Renew')
                                             ),
                                           ],
                                         )

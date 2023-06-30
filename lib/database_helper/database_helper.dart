@@ -103,12 +103,22 @@ class DatabaseHelper {
         "Renew",
         receiptNoController.text,
       );
-      await _database?.insert('transactionDetailTable', transactionData.toMap());
-      await _database?.update('familyTable', familyData.updateFamilyWhileRenew(),
-        where: 'hiCode = ?',
-        whereArgs: [hiCode],
-      );
-      return 1;
+      final List<Map<String, dynamic>> familyTableData =
+          await _database!.query('transactionDetailTable',
+            where: 'family = ? AND year = ? AND session = ?',
+            whereArgs: [int.tryParse(hiCode), int.tryParse(yearController.text), sessionController.text]
+          );
+      if (familyTableData.isEmpty){
+        await _database?.insert('transactionDetailTable', transactionData.toMap());
+        await _database?.update('familyTable', familyData.updateFamilyWhileRenew(),
+          where: 'hiCode = ?',
+          whereArgs: [hiCode],
+        );
+        return 1;
+      }
+      else {
+        return 0;
+      }
     } catch(error){
       return 0;
     }

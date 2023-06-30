@@ -187,7 +187,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                   }),
               ),
                   Padding(
-                  padding: const EdgeInsets.only(bottom: 60.0),
+                  padding: const EdgeInsets.only(left:8, right:8, bottom: 60.0),
                   child: SafeArea(
                     bottom: true,
                     child: ListView.builder(
@@ -236,6 +236,9 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                                             Row(
                                               children: [
                                                 ElevatedButton(
+                                                    style: ButtonStyle(
+                                                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF1a457c))
+                                                    ),
                                                     onPressed: (){
                                                       final Uri uri = Uri(
                                                         scheme: 'tel',

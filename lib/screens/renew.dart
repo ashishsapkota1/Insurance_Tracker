@@ -94,6 +94,7 @@ class _RenewState extends State<Renew> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Renew Insurance'),
+        backgroundColor: const Color(0xFF1a457c),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -231,7 +232,7 @@ class _RenewState extends State<Renew> {
               ),
               TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: const Color(0xFF1a457c),
                     padding: const EdgeInsets.only(
                         left: 50, top: 14, right: 50, bottom: 14),
                   ),

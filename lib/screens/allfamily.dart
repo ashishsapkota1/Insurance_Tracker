@@ -52,7 +52,7 @@ class _AllFamilyPageState extends State<AllFamilyPage> {
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.only(bottom: 60.0),
+        padding: const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 60.0),
         child: ListView.builder(
           itemCount: familyData.length,
           itemBuilder: (context, index) {
@@ -98,6 +98,9 @@ class _AllFamilyPageState extends State<AllFamilyPage> {
                             Row(
                               children: [
                                 ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF1a457c))
+                                    ),
                                     onPressed: (){
                                       final Uri uri = Uri(
                                         scheme: 'tel',
@@ -109,8 +112,14 @@ class _AllFamilyPageState extends State<AllFamilyPage> {
                                 ),
                                 const SizedBox(width: 8,),
                                 ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF1a457c))
+                                    ),
                                     onPressed: (){
-
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode)),
+                                        );
                                     },
                                     child: const Text('Details')
                                 ),

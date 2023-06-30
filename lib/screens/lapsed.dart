@@ -85,7 +85,7 @@ class _LapsedPageState extends State<LapsedPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 60.0),
+              padding: const EdgeInsets.only(top: 8, left: 8, right: 8, bottom: 60.0),
               child: SafeArea(
                 bottom: true,
                 child: ListView.builder(

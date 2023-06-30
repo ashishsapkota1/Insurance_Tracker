@@ -37,6 +37,7 @@ class _HomepageState extends State<Homepage> {
         ],
         centerTitle: true,
         title: const Text('Insured Tracker'),
+        backgroundColor: const Color(0xFF1a457c),
       ),
       body: Stack(
         children: [
@@ -58,6 +59,7 @@ class _HomepageState extends State<Homepage> {
             bottom: 0,
             right: 0,
             child: BottomNavigationBar(
+              selectedItemColor: const Color(0xFF1a457c),
               currentIndex: _currentIndex,
               onTap: (index) {
                 setState(() {
@@ -90,6 +92,7 @@ class _HomepageState extends State<Homepage> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 57.0),
         child: FloatingActionButton(
+          backgroundColor: const Color(0xFF1a457c),
           onPressed: () {
             Navigator.push(
               context,

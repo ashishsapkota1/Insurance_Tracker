@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hira/screens/edit_family.dart';
+import 'package:hira/screens/renew.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
-import '../database_helper/family.dart';
 
 class FamilyDetailsPage extends StatefulWidget {
   final int hiCode;
@@ -24,7 +25,6 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
   Future<void> fetchFamilyData(int hiCode) async {
     final databaseHelper = DatabaseHelper();
     final data = await databaseHelper.getOneFamily(hiCode);
-    print(data);
     setState(() {
       familyData = data;
     });
@@ -62,6 +62,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
       final String name = familyData['family']['name'].toString();
       final int memNo = familyData['family']['hiCode'];
       final int famNo = familyData['family']['membersNo'];
+      final String annualFee = familyData['family']['annualFee'];
       final String contact = familyData['family']['phnNo'];
       final String type = familyData['family']['type'];
       final String address = familyData['family']['address'];
@@ -71,163 +72,224 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
 
       return Scaffold(
         appBar: AppBar(
-          iconTheme: const IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.white),
           title: const Text(
-            'Details',
-            style: TextStyle(color: Colors.black),
+            'Family Details',
+            style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
-          backgroundColor: Colors.grey[200],
+          backgroundColor: const Color(0xFF1a457c),
         ),
         body: SafeArea(
           child: Column(
             children: [
               const SizedBox(
-                height: 15,
+                height: 8,
               ),
               Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Container(
-                  height: 300,
                   decoration: BoxDecoration(
+                      color: const Color(0xFF1a457c),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: Colors.black)),
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Text(
-                          name,
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Text(
+                            name.toUpperCase(),
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              const Text(
-                                'Membership No.',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Text(
-                                memNo.toString(),
-                                style: const TextStyle(fontSize: 20),
-                              )
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              const Text(
-                                'No. of members.',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Text(
-                                famNo.toString(),
-                                style: const TextStyle(fontSize: 20),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Contact',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              GestureDetector(
-                                  onTap: () {
-                                    final Uri uri = Uri(
-                                      scheme: 'tel',
-                                      path: '+977$contact',
-                                    );
-                                    _launchUrl(uri);
-                                  },
-                                  child: Text(
-                                    contact,
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.blue,
-                                        decoration: TextDecoration.underline),
-                                  ))
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              const Text(
-                                'Type',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Text(
-                                type,
-                                style: const TextStyle(fontSize: 20),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Address',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Text(
-                                address,
-                                style: const TextStyle(fontSize: 20),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Last Renewal',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Text(
-                                '$renewalYear-$renewalSession'.toString(),
-                                style: const TextStyle(fontSize: 20),
-                              )
-                            ],
-                          ),
-                        ],
-                      )
-                    ],
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child:
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Membership No.',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    Text(
+                                      memNo.toString(),
+                                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child:
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'No. of members.',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    Text(
+                                      famNo.toString(),
+                                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child:
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Contact',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          final Uri uri = Uri(
+                                            scheme: 'tel',
+                                            path: '+977$contact',
+                                          );
+                                          _launchUrl(uri);
+                                        },
+                                        child: Text(
+                                          contact,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.blue.shade300,
+                                              decoration: TextDecoration.underline),
+                                        ))
+                                  ],
+                                )
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child:
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Type',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    Text(
+                                      type,
+                                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                                    )
+                                  ],
+                                ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Address',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                Text(
+                                  address,
+                                  style: const TextStyle(fontSize: 18, color: Colors.white),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Last Renewal',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                Text(
+                                  '$renewalYear-$renewalSession'.toString(),
+                                  style: const TextStyle(fontSize: 18, color: Colors.white),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            ElevatedButton(
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF5dbea3))
+                                ),
+                                onPressed: (){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => Renew(name: name.toString(), hiCode: memNo.toString(), amount: annualFee.toString())),
+                                  );
+                                },
+                                child: const Text('Renew')
+                            ),
+                            ElevatedButton(
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue.shade300)
+                                ),
+                                onPressed: (){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => EditFamily(hiCode: memNo)),
+                                  );
+                                },
+                                child: const Text('Edit')
+                            ),
+                            ElevatedButton(
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
+                                ),
+                                onPressed: (){
+
+                                },
+                                child: const Text('Delete')
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
               const Text(
-                'Renewals',
+                'RENEWALS',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Expanded(
                   child: ListView.builder(
-                      shrinkWrap: true,
+                      shrinkWrap: false,
                       itemCount: transaction.length,
                       itemBuilder: (context, index) {
                         final transactions = transaction[index];
@@ -236,15 +298,17 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                         final String receiptNo = transactions['receiptNo'];
                         final String amount = transactions['amount'];
                         final String date = transactions['dateOfTransaction'];
+                        final String transactionType = transactions['transactionType'];
                         final DateTime renewalDate = DateTime.parse(date);
                         final String onlyDate =
                             '${renewalDate.year.toString()}-${renewalDate.month.toString()}-${renewalDate.day.toString()}';
                         return Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: ListTile(
+                            contentPadding: const EdgeInsets.all(8),
                             shape: RoundedRectangleBorder(
-                              side: BorderSide(width: 2),
-                              borderRadius: BorderRadius.circular(20),
+                              side: const BorderSide(width: 2),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             title: Text(
                               '$renewalYear-$renewalSession'.toString(),
@@ -253,23 +317,50 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                             subtitle: Column(
                               children: [
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('Receipt No: $receiptNo'),
-                                    Text('Amount: $amount')
-                                  ],
-                                ),
-                                Row(
-                                  children: [Text('Date: $onlyDate')],
-                                ),
-                                Row(
-                                  children: [
-                                    Text('Amount Received?'),
-                                    if (transactions['isAmountReceived'] == 'Yes')
-                                      Image.asset('assets/tick.png', width: 30, height: 30), // Display check SVG image
-                                    if (transactions['isAmountReceived'] == 'No')
-                                      Image.asset('assets/cross.png', width: 30, height: 30),
+                                    Expanded(
+                                        child:
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text('Receipt No: $receiptNo'),
+                                              Text('Date: $onlyDate'),
+                                              Text('Amount: $amount')
+                                            ],
+                                          ),
+                                    ),
+                                    Expanded(
+                                      child:
+                                        Column (
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                const Text('Amount Received?'),
+                                                if (transactions['isAmountReceived'] == 'Yes')
+                                                  Image.asset('assets/tick.png', width: 30, height: 30),
+                                                if (transactions['isAmountReceived'] == 'No')
+                                                  Image.asset('assets/cross.png', width: 30, height: 30),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  padding: const EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2),
+                                                  decoration: BoxDecoration(
+                                                    color: (transactionType == 'New' ?  const Color(0xFF5dbea3) : const Color(0xFF1a457c)),
+                                                    borderRadius: BorderRadius.circular(8)
+                                                  ),
+                                                  child: Text(
+                                                    transactionType,
+                                                    style: TextStyle(color: Colors.white),
+                                                  ),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        )
+                                    ),
                                   ],
                                 )
                               ],
@@ -285,30 +376,3 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
   }
 }
 
-// {
-//   family: {
-//     hiCode: 453794964,
-//     name: Sandesh Prasad Paudel,
-//     phnNo: 9860702575,
-//     membersNo: 3,
-//     renewalSession: Baishakh-Jestha-Ashadh,
-//     annualFee: 3500,
-//     type: Normal,
-//     lastRenewalYear: 2080,
-//     lastRenewalSession: Baishakh-Jestha-Ashadh,
-//     address: Beni, Myagdi
-//   },
-//   transactions: [
-//     {
-//       id: 3,
-//       family: 453794964,
-//       year: 2080,
-//       session: Baishakh-Jestha-Ashadh,
-//       amount: 3500,
-//       dateOfTransaction: 2080-03-14 19:18:01.657672,
-//       isAmountReceived: Yes,
-//       transactionType: Renew,
-//       receiptNo: 83263
-//     }
-//   ]
-// }

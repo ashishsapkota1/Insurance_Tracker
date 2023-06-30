@@ -38,6 +38,21 @@ class Family {
     return map;
   }
 
+  Map<String, dynamic> updateFamilyMap() {
+    var map = <String, dynamic>{};
+    map['name'] = name;
+    map['phnNo'] = phnNo;
+    map['membersNo'] = membersNo;
+    map['renewalSession'] = renewalSession;
+    map['annualFee'] = annualFee;
+    map['type'] = type;
+    map['lastRenewalYear'] = lastRenewalYear;
+    map['lastRenewalSession'] = lastRenewalSession;
+    map['address'] = address;
+
+    return map;
+  }
+
   Map<String, dynamic> updateFamilyWhileRenew() {
     var map = <String, dynamic>{};
     map['renewalSession'] = renewalSession;

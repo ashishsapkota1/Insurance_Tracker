@@ -64,18 +64,18 @@ class _EditFamilyState extends State<EditFamily> {
   }
 
   void initializeFields(){
-    familyHeadController.text = familyData['family']['name'];
-    membershipNoController.text = familyData['family']['hiCode'];
-    phoneNoController.text = familyData['family']['phnNo'];
-    noOfMembersController.text = familyData['family']['membersNo'];
-    annualFeeController.text = familyData['family']['annualFee'];
-    // familyTypeController.text = familyData['family']['type'];
-    // familyTypeDropdownValue = familyData['family']['type'];
-    // yearController.text = familyData['family']['lastRenewalYear'];
-    // yearsDropdownValue = familyData['family']['lastRenewalYear'];
-    // sessionController.text = familyData['family']['lastRenewalSession'];
-    // sessionDropdownValue = familyData['family']['lastRenewalSession'];
-    addressController.text = familyData['family']['address'];
+    familyHeadController.text = familyData['family']['name'].toString();
+    membershipNoController.text = familyData['family']['hiCode'].toString();
+    phoneNoController.text = familyData['family']['phnNo'].toString();
+    noOfMembersController.text = familyData['family']['membersNo'].toString();
+    annualFeeController.text = familyData['family']['annualFee'].toString();
+    familyTypeController.text = familyData['family']['type'].toString();
+    familyTypeDropdownValue = familyData['family']['type'].toString();
+    yearController.text = familyData['family']['lastRenewalYear'].toString();
+    yearsDropdownValue = familyData['family']['lastRenewalYear'].toString();
+    sessionController.text = familyData['family']['lastRenewalSession'].toString();
+    sessionDropdownValue = familyData['family']['lastRenewalSession'].toString();
+    addressController.text = familyData['family']['address'].toString();
   }
 
   @override
@@ -102,111 +102,161 @@ class _EditFamilyState extends State<EditFamily> {
 
     var yearsList = getYears(2075);
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Edit Family'),
-        backgroundColor: const Color(0xFF1a457c),
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    validator: (value){
-                      if(value==null || value.isEmpty){
-                        return 'Please enter Name';
-                      }
-                      return null;
-                    },
-                    controller: familyHeadController,
-                    decoration: InputDecoration(
-                        label: const Text('Family Head'),
-                        hintText: 'Name of Head of the Family',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        )),
-                  )),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    validator: (value){
-                      if(value == null || value.isEmpty){
-                        return 'Please enter HICODE';
-                      }else if(value.length<9 || value.length>9){
-                        return 'Must be exactly 9 digits';
-                      }
-                      return null;
-                    },
-                    readOnly: true,
-                    controller: membershipNoController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        label: const Text('Membership No.'),
-                        hintText: 'Membership No.',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        )),
-                  )),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    controller: phoneNoController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        label: const Text('Phone No.'),
-                        hintText: 'Phone No.',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        )),
-                  )),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    controller: addressController,
-                    decoration: InputDecoration(
-                        label: const Text('Address'),
-                        hintText: 'Address',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        )),
-                  )),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    controller: noOfMembersController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        label: const Text('No. of members'),
-                        hintText: 'No. of members',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        )),
-                  )),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    controller: annualFeeController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        label: const Text('Annual Fee'),
-                        hintText: 'Annual Fee',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        )),
-                  )),
-              Padding(
+    if (familyData.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Edit Details'),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Edit Family'),
+          backgroundColor: const Color(0xFF1a457c),
+        ),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      validator: (value){
+                        if(value==null || value.isEmpty){
+                          return 'Please enter Name';
+                        }
+                        return null;
+                      },
+                      controller: familyHeadController,
+                      decoration: InputDecoration(
+                          label: const Text('Family Head'),
+                          hintText: 'Name of Head of the Family',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          )),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      validator: (value){
+                        if(value == null || value.isEmpty){
+                          return 'Please enter HICODE';
+                        }else if(value.length<9 || value.length>9){
+                          return 'Must be exactly 9 digits';
+                        }
+                        return null;
+                      },
+                      readOnly: true,
+                      controller: membershipNoController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          label: const Text('Membership No.'),
+                          hintText: 'Membership No.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          )),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      controller: phoneNoController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          label: const Text('Phone No.'),
+                          hintText: 'Phone No.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          )),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      controller: addressController,
+                      decoration: InputDecoration(
+                          label: const Text('Address'),
+                          hintText: 'Address',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          )),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      controller: noOfMembersController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          label: const Text('No. of members'),
+                          hintText: 'No. of members',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          )),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      controller: annualFeeController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          label: const Text('Annual Fee'),
+                          hintText: 'Annual Fee',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          )),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: DropdownButtonFormField(
+                        decoration: InputDecoration(
+                            label: const Text('Family Type'),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8))),
+                        value: familyTypeDropdownValue,
+                        items: items.map((String item) {
+                          return DropdownMenuItem(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            familyTypeDropdownValue = newValue!;
+                            familyTypeController.text = newValue;
+                          });
+                        })),
+                Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: DropdownButtonFormField(
+                        decoration: InputDecoration(
+                            label: const Text('Last Renewed Year'),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8))),
+                        value: yearsDropdownValue,
+                        items: yearsList.map((String item) {
+                          return DropdownMenuItem(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            yearsDropdownValue = newValue!;
+                            yearController.text = newValue;
+                          });
+                        })),
+                Padding(
                   padding: const EdgeInsets.all(10),
                   child: DropdownButtonFormField(
                       decoration: InputDecoration(
-                          label: const Text('Family Type'),
+                          label: const Text('Session'),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8))),
-                      value: 'Normal',
-                      items: items.map((String item) {
+                      value: sessionDropdownValue,
+                      items: sessionItems.map((String item) {
                         return DropdownMenuItem(
                           value: item,
                           child: Text(item),
@@ -214,103 +264,55 @@ class _EditFamilyState extends State<EditFamily> {
                       }).toList(),
                       onChanged: (String? newValue) {
                         setState(() {
-                          // familyTypeDropdownValue = newValue!;
-                          // familyTypeController.text = newValue;
+                          sessionDropdownValue = newValue!;
+                          sessionController.text = newValue;
                         });
-                      })),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                          label: const Text('Last Renewed Year'),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8))),
-                      value: '2080',
-                      items: yearsList.map((String item) {
-                        return DropdownMenuItem(
-                          value: item,
-                          child: Text(item),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          // yearsDropdownValue = newValue!;
-                          // yearController.text = newValue;
-                        });
-                      })),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: DropdownButtonFormField(
-                    decoration: InputDecoration(
-                        label: const Text('Session'),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8))),
-                    value: 'Baishakh-Jestha-Ashadh',
-                    items: sessionItems.map((String item) {
-                      return DropdownMenuItem(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
+                      }),
+                ),
+                TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.only(
+                          left: 50, top: 14, right: 50, bottom: 14),
+                    ),
+                    onPressed: () {
                       setState(() {
-                        // sessionDropdownValue = newValue!;
-                        // sessionController.text = newValue;
-                      });
-                    }),
-              ),
-              TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.only(
-                        left: 50, top: 14, right: 50, bottom: 14),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      if(_formKey.currentState!.validate()){
-                        _save();
-                      }
+                        if(_formKey.currentState!.validate()){
+                          _save();
+                        }
 
-                    });
-                  },
-                  child: const Text(
-                    'Update',
-                    style: TextStyle(color: Colors.white),
-                  )),
-              const SizedBox(height: 20)
-            ],
+                      });
+                    },
+                    child: const Text(
+                      'Update',
+                      style: TextStyle(color: Colors.white),
+                    )),
+                const SizedBox(height: 20)
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   void _save() async {
-    // int result = (await helper.insertFamily(
-    //     familyHeadController,
-    //     membershipNoController,
-    //     phoneNoController,
-    //     addressController,
-    //     noOfMembersController,
-    //     annualFeeController,
-    //     receiptNoController,
-    //     familyTypeController,
-    //     transactionTypeController,
-    //     yearController,
-    //     sessionController,
-    //     amountReceivedController));
-    // if (result != 0) {
-    //   _showAlertDialog('Status', "New family added successfully");
-    //   familyHeadController.clear();
-    //   membershipNoController.clear();
-    //   phoneNoController.clear();
-    //   addressController.clear();
-    //   noOfMembersController.clear();
-    //   annualFeeController.clear();
-    //   receiptNoController.clear();
-    // } else {
-    //   _showAlertDialog('Status', "Failed to add new family.");
-    // }
+    int result = (await helper.updateFamily(
+        familyHeadController,
+        membershipNoController,
+        phoneNoController,
+        addressController,
+        noOfMembersController,
+        annualFeeController,
+        familyTypeController,
+        yearController,
+        sessionController));
+    if (result != 0) {
+      _showAlertDialog('Status', "Family Updated Successfully.");
+      fetchFamilyData(widget.hiCode);
+    } else {
+      _showAlertDialog('Status', "Failed to update family.");
+    }
   }
 
   void _showAlertDialog(String title, String message) {

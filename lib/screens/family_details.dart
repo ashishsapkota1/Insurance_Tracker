@@ -353,7 +353,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                                   ),
                                                   child: Text(
                                                     transactionType,
-                                                    style: TextStyle(color: Colors.white),
+                                                    style: const TextStyle(color: Colors.white),
                                                   ),
                                                 )
                                               ],

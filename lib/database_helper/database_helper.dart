@@ -70,6 +70,42 @@ class DatabaseHelper {
     }
   }
 
+  Future<int> updateFamily(
+      TextEditingController familyHeadController,
+      TextEditingController membershipNoController,
+      TextEditingController phoneNoController,
+      TextEditingController addressController,
+      TextEditingController noOfMembersController,
+      TextEditingController annualFeeController,
+      TextEditingController familyTypeController,
+      TextEditingController yearController,
+      TextEditingController sessionController) async {
+    _database = await openDB();
+    UserRepo userRepo = UserRepo();
+    userRepo.createDb(_database);
+    try {
+      Family familyData = Family(
+          0,
+          familyHeadController.text,
+          phoneNoController.text,
+          int.tryParse(noOfMembersController.text) ?? 0,
+          sessionController.text,
+          annualFeeController.text,
+          familyTypeController.text,
+          (int.tryParse(yearController.text)) ?? 0,
+          sessionController.text,
+          addressController.text
+      );
+      await _database?.update('familyTable', familyData.updateFamilyMap(),
+        where: 'hiCode = ?',
+        whereArgs: [int.tryParse(membershipNoController.text)]
+      );
+      return 1;
+    } catch(error){
+      return 0;
+    }
+  }
+
   Future<int> renewInsurance(
       String hiCode,
       String amount,

@@ -38,7 +38,8 @@ dependencies:
   nepali_date_picker: ^5.3.1
   url_launcher: ^6.1.7
   path: any
-
+  firebase_core: ^2.14.0
+  cloud_firestore: ^4.8.2
 
 
   # The following adds the Cupertino Icons font to your application.

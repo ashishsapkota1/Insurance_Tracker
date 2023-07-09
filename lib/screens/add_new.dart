@@ -35,7 +35,7 @@ class _AddFamilyState extends State<AddFamily> {
   TextEditingController noOfMembersController = TextEditingController();
   TextEditingController annualFeeController = TextEditingController();
   TextEditingController receiptNoController = TextEditingController();
-  TextEditingController familyTypeController = TextEditingController(text: "Normal");
+  TextEditingController familyTypeController = TextEditingController(text: "General");
   TextEditingController transactionTypeController = TextEditingController(text: "New");
   TextEditingController yearController = TextEditingController(text: NepaliDateTime.now().year.toString());
   TextEditingController sessionController = TextEditingController();
@@ -79,7 +79,7 @@ class _AddFamilyState extends State<AddFamily> {
       sessionDropdownValue = 'Magh-Falgun-Chaitra';
       sessionController.text = 'Magh-Falgun-Chaitra';
     }
-    familyTypeDropdownValue = 'Normal';
+    familyTypeDropdownValue = 'General';
     yearsDropdownValue = NepaliDateTime.now().year.toString();
     transactionTypeDropdownValue = 'New';
     amountReceivedDropdownValue = 'Yes';
@@ -89,7 +89,7 @@ class _AddFamilyState extends State<AddFamily> {
 
   @override
   Widget build(BuildContext context) {
-    var items = ['Normal', 'Aged', 'Disabled'];
+    var items = ['General', 'Aged', 'Disabled'];
     var sessionItems = [
       'Baishakh-Jestha-Ashadh',
       'Shrawan-Bhadra-Ashwin',

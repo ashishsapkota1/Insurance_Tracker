@@ -5,6 +5,7 @@ import 'package:hira/database_helper/user_Repo.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _databaseHelper = DatabaseHelper._internal();
@@ -161,51 +162,101 @@ class DatabaseHelper {
   }
 
   Future<List<Map<String, dynamic>>> getTableData() async {
-    await openDB();
+    // await openDB();
 
-    final List<Map<String, dynamic>> familyTableData =
-        await _database!.query('familyTable',
-          orderBy: 'name ASC'
-        );
-
+    // final List<Map<String, dynamic>> familyTableData =
+    //     await _database!.query('familyTable',
+    //       orderBy: 'name ASC'
+    //     );
+    final List<Map<String, dynamic>> familyTableData = [];
+    await FirebaseFirestore.instance.collection("family").orderBy("name").get().then(
+          (querySnapshot) {
+        for (var docSnapshot in querySnapshot.docs) {
+          familyTableData.add({'id': docSnapshot.id, ...docSnapshot.data()});
+        }
+      }
+    );
     return familyTableData;
   }
 
 
   Future<Map<String, dynamic>> getOneFamily(int hiCode) async {
-    await openDB();
-
-    final List<Map<String, dynamic>> familyTableData =
-      await _database!.query('familyTable',
-        where: 'hiCode = ?',
-        whereArgs: [hiCode],
-      );
-    final List<Map<String, dynamic>> allTransactions =
-      await _database!.query('transactionDetailTable',
-        where: 'family = ?',
-        whereArgs: [hiCode],
-        orderBy: 'year DESC'
-      );
-    final Map<String, dynamic> oneFamily = {
-      'family': familyTableData[0],
-      'transactions': allTransactions
+    final List<Map<String, dynamic>> family = [];
+    final List<Map<String, dynamic>> allRenewals = [];
+    await FirebaseFirestore.instance.collection("family").where("hiCode", isEqualTo: hiCode).get().then(
+            (querySnapshot) {
+          for (var docSnapshot in querySnapshot.docs) {
+            family.add({'id': docSnapshot.id, ...docSnapshot.data()});
+          }
+        }
+    );
+    await FirebaseFirestore.instance.collection("renewals").where("family", isEqualTo: hiCode).get().then(
+            (querySnapshot) {
+          for (var docSnapshot in querySnapshot.docs) {
+            allRenewals.add({'id': docSnapshot.id, ...docSnapshot.data()});
+          }
+        }
+    );
+    Map<String, dynamic> oneFamily = {
+      'family': family[0],
+      'transactions': allRenewals
     };
     return oneFamily;
+
+
+    // await openDB();
+    //
+    // final List<Map<String, dynamic>> familyTableData =
+    //   await _database!.query('familyTable',
+    //     where: 'hiCode = ?',
+    //     whereArgs: [hiCode],
+    //   );
+    // final List<Map<String, dynamic>> allTransactions =
+    //   await _database!.query('transactionDetailTable',
+    //     where: 'family = ?',
+    //     whereArgs: [hiCode],
+    //     orderBy: 'year DESC'
+    //   );
+    // final Map<String, dynamic> oneFamily = {
+    //   'family': familyTableData[0],
+    //   'transactions': allTransactions
+    // };
+    // return oneFamily;
   }
 
 
   Future<List<Map<String, dynamic>>> getThisSessionData(int year, String session) async {
-    await openDB();
-    final List<Map<String, dynamic>> familyTableData =
-    await _database!.query('familyTable',
-      where: '(lastRenewalYear = ? AND renewalSession = ?) OR (lastRenewalYear = ? AND renewalSession = ?)',
-        whereArgs: [year, session, year-1, session],
-      orderBy: 'name ASC'
-    );
-    return familyTableData;
+    final List<Map<String, dynamic>> allFamily = await getTableData();
+    List<Map<String, dynamic>> thisSessionData = [];
+    for (var fam in allFamily) {
+      int lastRenewalYear = fam['lastRenewalYear'];
+      String lastRenewalSession = fam['lastRenewalSession'];
+      if ((lastRenewalYear == year && lastRenewalSession == session) || (lastRenewalYear == year-1 && lastRenewalSession == session)) {
+        thisSessionData.add(fam);
+      }
+    }
+    return thisSessionData;
+    // await openDB();
+    // final List<Map<String, dynamic>> familyTableData =
+    // await _database!.query('familyTable',
+    //   where: '(lastRenewalYear = ? AND renewalSession = ?) OR (lastRenewalYear = ? AND renewalSession = ?)',
+    //     whereArgs: [year, session, year-1, session],
+    //   orderBy: 'name ASC'
+    // );
+    // return familyTableData;
   }
 
   Future<List<Map<String, dynamic>>> searchData(String searchTerm) async {
+    // final List<Map<String, dynamic>> allFamily = await getTableData();
+    // List<Map<String, dynamic>> searchedData = [];
+    // for (var fam in allFamily) {
+    //   String name = fam['name'];
+    //   int hiCode = fam['hiCode'];
+    //   if (name.toLowerCase().contains(searchTerm.toLowerCase()) || hiCode.toString().toLowerCase().contains(searchTerm.toLowerCase())){
+    //     searchedData.add(fam);
+    //   }
+    // }
+    // return searchedData;
     await openDB();
 
     return _database!.query('familyTable',

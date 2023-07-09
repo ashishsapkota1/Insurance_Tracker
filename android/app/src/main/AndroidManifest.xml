@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.hira">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="hira"
+        android:label="Insurance Tracker"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
 
 class FamilyDetailsPage extends StatefulWidget {
-  final int hiCode;
+  final String hiCode;
 
   const FamilyDetailsPage({super.key, required this.hiCode});
 
@@ -19,7 +19,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
   @override
   void initState() {
     super.initState();
-    fetchFamilyData(widget.hiCode);
+    fetchFamilyData(int.tryParse(widget.hiCode)??0);
   }
 
   Future<void> fetchFamilyData(int hiCode) async {
@@ -59,15 +59,15 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
         ),
       );
     } else {
-      final String name = familyData['family']['name'].toString();
-      final int memNo = familyData['family']['hiCode'];
-      final int famNo = familyData['family']['membersNo'];
-      final String annualFee = familyData['family']['annualFee'];
-      final String contact = familyData['family']['phnNo'];
-      final String type = familyData['family']['type'];
-      final String address = familyData['family']['address'];
-      final int renewalYear = familyData['family']['lastRenewalYear'];
-      final String renewalSession = familyData['family']['lastRenewalSession'];
+      final String name = familyData['family']['name'].toString().toUpperCase();
+      final String memNo = familyData['family']['hiCode'].toString();
+      final String famNo = familyData['family']['membersNo'].toString();
+      final String annualFee = familyData['family']['annualFee'].toString();
+      final String contact = familyData['family']['phnNo'].toString();
+      final String type = familyData['family']['type'].toString();
+      final String address = familyData['family']['address'].toString();
+      final String renewalYear = familyData['family']['lastRenewalYear'].toString();
+      final String renewalSession = familyData['family']['lastRenewalSession'].toString();
       final List<dynamic> transaction = familyData['transactions'];
 
       return Scaffold(
@@ -99,7 +99,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                       children: [
                         Center(
                           child: Text(
-                            name.toUpperCase(),
+                            name,
                             style: const TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                           ),
@@ -120,7 +120,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                       style: TextStyle(color: Colors.grey),
                                     ),
                                     Text(
-                                      memNo.toString(),
+                                      memNo,
                                       style: const TextStyle(fontSize: 18, color: Colors.white),
                                     )
                                   ],
@@ -137,7 +137,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                       style: TextStyle(color: Colors.grey),
                                     ),
                                     Text(
-                                      famNo.toString(),
+                                      famNo,
                                       style: const TextStyle(fontSize: 18, color: Colors.white),
                                     )
                                   ],
@@ -230,7 +230,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                   style: TextStyle(color: Colors.grey),
                                 ),
                                 Text(
-                                  '$renewalYear-$renewalSession'.toString(),
+                                  '$renewalYear-$renewalSession',
                                   style: const TextStyle(fontSize: 18, color: Colors.white),
                                 )
                               ],
@@ -250,7 +250,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                 onPressed: (){
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => Renew(name: name.toString(), hiCode: memNo.toString(), amount: annualFee.toString())),
+                                    MaterialPageRoute(builder: (context) => Renew(name: name, hiCode: memNo, amount: annualFee)),
                                   );
                                 },
                                 child: const Text('Renew')
@@ -292,13 +292,13 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                       shrinkWrap: false,
                       itemCount: transaction.length,
                       itemBuilder: (context, index) {
-                        final transactions = transaction[index];
-                        final int renewalYear = transactions['year'];
-                        final String renewalSession = transactions['session'];
-                        final String receiptNo = transactions['receiptNo'];
-                        final String amount = transactions['amount'];
-                        final String date = transactions['dateOfTransaction'];
-                        final String transactionType = transactions['transactionType'];
+                        final trans = transaction[index];
+                        final String renewalYear = trans['year'].toString();
+                        final String renewalSession = trans['session'].toString();
+                        final String receiptNo = trans['receiptNo'].toString();
+                        final String amount = trans['amount'].toString();
+                        final String date = trans['dateOfTransaction'].toString();
+                        final String transactionType = trans['transactionType'].toString();
                         final DateTime renewalDate = DateTime.parse(date);
                         final String onlyDate =
                             '${renewalDate.year.toString()}-${renewalDate.month.toString()}-${renewalDate.day.toString()}';
@@ -337,9 +337,9 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                             Row(
                                               children: [
                                                 const Text('Amount Received?'),
-                                                if (transactions['isAmountReceived'] == 'Yes')
+                                                if (trans['isAmountReceived'] == 'Yes')
                                                   Image.asset('assets/tick.png', width: 30, height: 30),
-                                                if (transactions['isAmountReceived'] == 'No')
+                                                if (trans['isAmountReceived'] == 'No')
                                                   Image.asset('assets/cross.png', width: 30, height: 30),
                                               ],
                                             ),

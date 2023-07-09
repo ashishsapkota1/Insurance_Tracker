@@ -4,7 +4,7 @@ import 'package:hira/database_helper/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class EditFamily extends StatefulWidget {
-  final int hiCode;
+  final String hiCode;
 
   const EditFamily({super.key, required this.hiCode});
 
@@ -51,7 +51,7 @@ class _EditFamilyState extends State<EditFamily> {
   @override
   void initState() {
     super.initState();
-    fetchFamilyData(widget.hiCode);
+    fetchFamilyData(int.tryParse(widget.hiCode)??0);
   }
 
   Future<void> fetchFamilyData(int hiCode) async {
@@ -80,7 +80,7 @@ class _EditFamilyState extends State<EditFamily> {
 
   @override
   Widget build(BuildContext context) {
-    var items = ['Normal', 'Aged', 'Disabled'];
+    var items = ['General', 'Aged', 'Disabled'];
     var sessionItems = [
       'Baishakh-Jestha-Ashadh',
       'Shrawan-Bhadra-Ashwin',
@@ -309,7 +309,7 @@ class _EditFamilyState extends State<EditFamily> {
         sessionController));
     if (result != 0) {
       _showAlertDialog('Status', "Family Updated Successfully.");
-      fetchFamilyData(widget.hiCode);
+      fetchFamilyData(int.tryParse(widget.hiCode)??0);
     } else {
       _showAlertDialog('Status', "Failed to update family.");
     }

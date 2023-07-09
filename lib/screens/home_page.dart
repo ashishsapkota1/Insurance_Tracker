@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hira/database_helper/database_helper.dart';
 import 'package:hira/screens/add_new.dart';
 import 'package:hira/screens/lapsed.dart';
+import 'package:hira/screens/search_family.dart';
 import 'package:hira/screens/thisSession.dart';
 
 import '../components/searchbar.dart';
@@ -25,11 +26,15 @@ class _HomepageState extends State<Homepage> {
         actions: [
           IconButton(
             onPressed: () {
-              final databaseHelper = DatabaseHelper();
-              showSearch(
-                  context: context,
-                  // delegate to customize the search bar
-                  delegate: CustomSearchDelegate(databaseHelper)
+              // final databaseHelper = DatabaseHelper();
+              // showSearch(
+              //     context: context,
+              //     // delegate to customize the search bar
+              //     delegate: CustomSearchDelegate(databaseHelper)
+              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SearchFamily()),
               );
             },
             icon: const Icon(Icons.search),

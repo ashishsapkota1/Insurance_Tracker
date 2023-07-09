@@ -210,7 +210,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                             onTap: (){
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode)),
+                                MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
                               );
                             },
                             contentPadding:const EdgeInsets.all(8),
@@ -256,7 +256,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                                                     onPressed: (){
                                                       Navigator.push(
                                                         context,
-                                                        MaterialPageRoute(builder: (context) => Renew(name: name.toString(), hiCode: hiCode.toString(), amount: amount.toString())),
+                                                        MaterialPageRoute(builder: (context) => Renew(name: name, hiCode: hiCode.toString(), amount: amount)),
                                                       );
                                                     },
                                                     child: const Text('Renew')

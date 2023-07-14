@@ -23,18 +23,18 @@ class _LapsedPageState extends State<LapsedPage> {
   Future<void> fetchFamilyData() async {
     NepaliDateTime today = NepaliDateTime.now();
     List<String> months = [
-      'Baishakh',
-      'Jestha',
-      'Ashadh',
-      'Shrawan',
-      'Bhadra',
-      'Ashwin',
-      'Kartik',
-      'Mangsir',
-      'Poush',
-      'Magh',
-      'Falgun',
-      'Chaitra'
+      'बैशाख',
+      'जेठ',
+      'असार',
+      'साउन',
+      'भदौ',
+      'असोज',
+      'कार्तिक',
+      'मंसिर',
+      'पुष',
+      'माघ',
+      'फागुन',
+      'चैत'
     ];
     final databaseHelper = DatabaseHelper();
     final data = await databaseHelper.getTableData();
@@ -95,6 +95,7 @@ class _LapsedPageState extends State<LapsedPage> {
                   itemCount: familyData.length,
                   itemBuilder: (context, index) {
                     final family = familyData[index];
+                    final id = family['id'];
                     final name = family['name'];
                     final hiCode = family['hiCode'];
                     final phoneNo = family['phnNo'];
@@ -145,7 +146,7 @@ class _LapsedPageState extends State<LapsedPage> {
                                                 onPressed: (){
                                                   Navigator.push(
                                                     context,
-                                                    MaterialPageRoute(builder: (context) => Renew(name: name.toString(), hiCode: hiCode.toString(), amount: amount.toString())),
+                                                    MaterialPageRoute(builder: (context) => Renew(id: id.toString(), name: name.toString(), hiCode: hiCode.toString(), amount: amount.toString())),
                                                   );
                                                 },
                                                 child: const Text('Renew')

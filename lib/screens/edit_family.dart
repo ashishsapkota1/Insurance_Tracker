@@ -4,7 +4,7 @@ import 'package:hira/database_helper/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class EditFamily extends StatefulWidget {
-  final String hiCode;
+  final int hiCode;
 
   const EditFamily({super.key, required this.hiCode});
 
@@ -51,7 +51,7 @@ class _EditFamilyState extends State<EditFamily> {
   @override
   void initState() {
     super.initState();
-    fetchFamilyData(int.tryParse(widget.hiCode)??0);
+    fetchFamilyData(widget.hiCode);
   }
 
   Future<void> fetchFamilyData(int hiCode) async {
@@ -82,10 +82,10 @@ class _EditFamilyState extends State<EditFamily> {
   Widget build(BuildContext context) {
     var items = ['General', 'Aged', 'Disabled'];
     var sessionItems = [
-      'Baishakh-Jestha-Ashadh',
-      'Shrawan-Bhadra-Ashwin',
-      'Kartik-Mangsir-Poush',
-      'Magh-Falgun-Chaitra'
+      'बैशाख-जेठ-असार',
+      'साउन-भदौ-असोज',
+      'कार्तिक-मंसिर-पुष',
+      'माघ-फागुन-चैत'
     ];
     List<String> getYears(int year) {
       int currentYear = NepaliDateTime.now().year;
@@ -105,7 +105,7 @@ class _EditFamilyState extends State<EditFamily> {
     if (familyData.isEmpty) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Edit Details'),
+          title: const Text('परिवार सम्पादन'),
         ),
         body: const Center(
           child: CircularProgressIndicator(),
@@ -115,7 +115,7 @@ class _EditFamilyState extends State<EditFamily> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Edit Family'),
+          title: const Text('परिवार सम्पादन'),
           backgroundColor: const Color(0xFF1a457c),
         ),
         body: SingleChildScrollView(
@@ -134,8 +134,8 @@ class _EditFamilyState extends State<EditFamily> {
                       },
                       controller: familyHeadController,
                       decoration: InputDecoration(
-                          label: const Text('Family Head'),
-                          hintText: 'Name of Head of the Family',
+                          label: const Text('घरमूलीको नाम'),
+                          hintText: 'घरमूलीको नाम',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           )),
@@ -151,12 +151,11 @@ class _EditFamilyState extends State<EditFamily> {
                         }
                         return null;
                       },
-                      readOnly: true,
                       controller: membershipNoController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                          label: const Text('Membership No.'),
-                          hintText: 'Membership No.',
+                          label: const Text('सदस्यता नं.'),
+                          hintText: 'सदस्यता नं.',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           )),
@@ -167,8 +166,8 @@ class _EditFamilyState extends State<EditFamily> {
                       controller: phoneNoController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                          label: const Text('Phone No.'),
-                          hintText: 'Phone No.',
+                          label: const Text('सम्पर्क नं.'),
+                          hintText: 'सम्पर्क नं.',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           )),
@@ -178,8 +177,8 @@ class _EditFamilyState extends State<EditFamily> {
                     child: TextFormField(
                       controller: addressController,
                       decoration: InputDecoration(
-                          label: const Text('Address'),
-                          hintText: 'Address',
+                          label: const Text('ठेगाना'),
+                          hintText: 'ठेगाना',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           )),
@@ -190,8 +189,8 @@ class _EditFamilyState extends State<EditFamily> {
                       controller: noOfMembersController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                          label: const Text('No. of members'),
-                          hintText: 'No. of members',
+                          label: const Text('सदस्य संख्या'),
+                          hintText: 'सदस्य संख्या',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           )),
@@ -202,8 +201,8 @@ class _EditFamilyState extends State<EditFamily> {
                       controller: annualFeeController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                          label: const Text('Annual Fee'),
-                          hintText: 'Annual Fee',
+                          label: const Text('योगदान रकम'),
+                          hintText: 'योगदान रकम',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           )),
@@ -212,7 +211,7 @@ class _EditFamilyState extends State<EditFamily> {
                     padding: const EdgeInsets.all(10),
                     child: DropdownButtonFormField(
                         decoration: InputDecoration(
-                            label: const Text('Family Type'),
+                            label: const Text('प्रकार'),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8))),
                         value: familyTypeDropdownValue,
@@ -232,7 +231,7 @@ class _EditFamilyState extends State<EditFamily> {
                     padding: const EdgeInsets.all(10),
                     child: DropdownButtonFormField(
                         decoration: InputDecoration(
-                            label: const Text('Last Renewed Year'),
+                            label: const Text('अन्तिम नविकरण वर्ष'),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8))),
                         value: yearsDropdownValue,
@@ -252,7 +251,7 @@ class _EditFamilyState extends State<EditFamily> {
                   padding: const EdgeInsets.all(10),
                   child: DropdownButtonFormField(
                       decoration: InputDecoration(
-                          label: const Text('Session'),
+                          label: const Text('चरण'),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8))),
                       value: sessionDropdownValue,
@@ -284,7 +283,7 @@ class _EditFamilyState extends State<EditFamily> {
                       });
                     },
                     child: const Text(
-                      'Update',
+                      'सम्पादन गर्नुहोस्',
                       style: TextStyle(color: Colors.white),
                     )),
                 const SizedBox(height: 20)
@@ -298,6 +297,7 @@ class _EditFamilyState extends State<EditFamily> {
 
   void _save() async {
     int result = (await helper.updateFamily(
+        familyData['family']['id'].toString(),
         familyHeadController,
         membershipNoController,
         phoneNoController,
@@ -309,7 +309,7 @@ class _EditFamilyState extends State<EditFamily> {
         sessionController));
     if (result != 0) {
       _showAlertDialog('Status', "Family Updated Successfully.");
-      fetchFamilyData(int.tryParse(widget.hiCode)??0);
+      fetchFamilyData(widget.hiCode);
     } else {
       _showAlertDialog('Status', "Failed to update family.");
     }

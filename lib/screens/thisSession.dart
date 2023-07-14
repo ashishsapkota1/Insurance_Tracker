@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:hira/screens/renew.dart';
+import '../database_helper/mobile.dart';
 
 class ThisSessionPage extends StatefulWidget {
   const ThisSessionPage({Key? key}) : super(key: key);
@@ -13,7 +14,7 @@ class ThisSessionPage extends StatefulWidget {
 }
 
 class _ThisSessionPageState extends State<ThisSessionPage> {
-  List<Map<String, dynamic>> familyData = [];
+  Map<String, dynamic> familyData = {};
   String sessionDropdownValue = '';
   int yearsDropdownValue = 0;
 
@@ -27,13 +28,13 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
     NepaliDateTime forthSession = NepaliDateTime(today.year, 10, 1);
 
     if (today.isAfter(firstSession) && today.isBefore(secondSession)) {
-      sessionDropdownValue = 'Baishakh-Jestha-Ashadh';
+      sessionDropdownValue = 'बैशाख-जेठ-असार';
     } else if (today.isAfter(secondSession) && today.isBefore(thirdSession)) {
-      sessionDropdownValue = 'Shrawan-Bhadra-Ashwin';
+      sessionDropdownValue = 'साउन-भदौ-असोज';
     } else if (today.isAfter(thirdSession) && today.isBefore(forthSession)) {
-      sessionDropdownValue = 'Kartik-Mangsir-Poush';
+      sessionDropdownValue = 'कार्तिक-मंसिर-पुष';
     } else {
-      sessionDropdownValue = 'Magh-Falgun-Chaitra';
+      sessionDropdownValue = 'माघ-फागुन-चैत';
     }
     yearsDropdownValue = NepaliDateTime.now().year;
     fetchFamilyData(yearsDropdownValue, sessionDropdownValue);
@@ -64,14 +65,19 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
     }
   }
 
+  Future<void> createPDF() async {
+    final pdfHelper = PDFHelper();
+    await pdfHelper.createPDF();
+  }
+
   @override
   Widget build(BuildContext context) {
 
     var sessionItems = [
-      'Baishakh-Jestha-Ashadh',
-      'Shrawan-Bhadra-Ashwin',
-      'Kartik-Mangsir-Poush',
-      'Magh-Falgun-Chaitra'
+      'बैशाख-जेठ-असार',
+      'साउन-भदौ-असोज',
+      'कार्तिक-मंसिर-पुष',
+      'माघ-फागुन-चैत'
     ];
 
     List<int> getYears(int year) {
@@ -140,6 +146,12 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
         ],
       );
     } else {
+      final List<dynamic> toBeRenewed = familyData['toBeRenewed'];
+      final List<dynamic> newGeneral = familyData['newGeneral'];
+      final List<dynamic> renewGeneral = familyData['renewGeneral'];
+      final List<dynamic> newAged = familyData['newAged'];
+      final List<dynamic> newDisabled = familyData['newDisabled'];
+      final List<dynamic> renewDisabled = familyData['renewDisabled'];
       return SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -186,99 +198,507 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                       });
                   }),
               ),
-                  Padding(
-                  padding: const EdgeInsets.only(left:8, right:8, bottom: 60.0),
-                  child: SafeArea(
-                    bottom: true,
-                    child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: familyData.length,
-                      itemBuilder: (context, index) {
-                        final family = familyData[index];
-                        final name = family['name'];
-                        final hiCode = family['hiCode'];
-                        final phoneNo = family['phnNo'];
-                        final amount = family['annualFee'];
-                        return Card(
-                          elevation: 5,
-                          shape: RoundedRectangleBorder(
-                              side: const BorderSide(color: Colors.blueAccent),
-                              borderRadius: BorderRadius.circular(8)),
-                          child: ListTile(
-                            onTap: (){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
-                              );
-                            },
-                            contentPadding:const EdgeInsets.all(8),
-                            title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                                Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text('Contact: $phoneNo'),
-                                            Text('Amount: $amount')
-                                          ],
-                                        ),
-                                        Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                ElevatedButton(
-                                                    style: ButtonStyle(
-                                                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF1a457c))
-                                                    ),
-                                                    onPressed: (){
-                                                      final Uri uri = Uri(
-                                                        scheme: 'tel',
-                                                        path: '+977$phoneNo',
-                                                      );
-                                                      _launchUrl(uri);
-                                                    },
-                                                    child: const Text('Call')
-                                                ),
-                                                const SizedBox(width: 8,),
-                                                ElevatedButton(
-                                                    style: ButtonStyle(
-                                                        backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF5dbea3))
-                                                    ),
-                                                    onPressed: (){
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(builder: (context) => Renew(name: name, hiCode: hiCode.toString(), amount: amount)),
-                                                      );
-                                                    },
-                                                    child: const Text('Renew')
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    )
-                                ),
-                              ],
-                            ),
-                            // Add more fields as needed
-                          ),
+            Padding(
+              padding: const EdgeInsets.only(right: 10.0, left: 10.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF5dbea3)),
+                    ),
+                    onPressed: (){
+                      createPDF();
+                    },
+                    child: const Text('Generate Report')
+                ),
+              ),
+            ),
+            const Text(
+              'नविकरण गर्न बाँकि',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Padding(
+            padding: const EdgeInsets.only(left:8, right:8, bottom: 20.0),
+            child: SafeArea(
+              bottom: true,
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: toBeRenewed.length,
+                itemBuilder: (context, index) {
+                  final family = toBeRenewed[index];
+                  final id = family['id'];
+                  final name = family['name'];
+                  final hiCode = family['hiCode'];
+                  final phoneNo = family['phnNo'];
+                  final amount = family['annualFee'];
+                  return Card(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.blueAccent),
+                        borderRadius: BorderRadius.circular(8)),
+                    child: ListTile(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
                         );
                       },
-                    ),
-                  ),
+                      contentPadding:const EdgeInsets.all(8),
+                      title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                          Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Contact: $phoneNo'),
+                                      Text('Amount: $amount')
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          ElevatedButton(
+                                              style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF1a457c))
+                                              ),
+                                              onPressed: (){
+                                                final Uri uri = Uri(
+                                                  scheme: 'tel',
+                                                  path: '+977$phoneNo',
+                                                );
+                                                _launchUrl(uri);
+                                              },
+                                              child: const Text('Call')
+                                          ),
+                                          const SizedBox(width: 8,),
+                                          ElevatedButton(
+                                              style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF5dbea3))
+                                              ),
+                                              onPressed: (){
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => Renew(id: id.toString(), name: name, hiCode: hiCode.toString(), amount: amount)),
+                                                );
+                                              },
+                                              child: const Text('Renew')
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  )
+                                ],
+                              )
+                            ),
+                          ],
+                        ),
+                        // Add more fields as needed
+                      ),
+                    );
+                  },
+                ),
               ),
-              
-
+            ),
+            const Text(
+              'साधारण परिवार - नयाँ दर्ता',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left:8, right:8, bottom: 20.0),
+              child: SafeArea(
+                bottom: true,
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: newGeneral.length,
+                  itemBuilder: (context, index) {
+                    final family = newGeneral[index];
+                    final name = family['name'];
+                    final hiCode = family['hiCode'];
+                    final amount = family['annualFee'];
+                    final isAmountReceived = family['isAmountReceived'];
+                    final receiptNo = family['receiptNo'];
+                    final String dateOfTransaction = family['dateOfTransaction'].toString().split(' ')[0];
+                    return Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: Colors.blueAccent),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: ListTile(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
+                          );
+                        },
+                        contentPadding:const EdgeInsets.all(8),
+                        title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('रकम: $amount'),
+                                        Text('रसिद नं.: $receiptNo')
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('मिति: $dateOfTransaction'),
+                                        Row(
+                                          children: [
+                                            const Text('रकम भुक्तानि?'),
+                                            if (isAmountReceived.toString() == 'Yes')
+                                              Image.asset('assets/tick.png', width: 30, height: 30),
+                                            if (isAmountReceived.toString() == 'No')
+                                              Image.asset('assets/cross.png', width: 30, height: 30),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                            ),
+                          ],
+                        ),
+                        // Add more fields as needed
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            const Text(
+              'साधारण परिवार - नविकरण',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left:8, right:8, bottom: 20.0),
+              child: SafeArea(
+                bottom: true,
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: renewGeneral.length,
+                  itemBuilder: (context, index) {
+                    final family = renewGeneral[index];
+                    final name = family['name'];
+                    final hiCode = family['hiCode'];
+                    final amount = family['annualFee'];
+                    final isAmountReceived = family['isAmountReceived'];
+                    final receiptNo = family['receiptNo'];
+                    final String dateOfTransaction = family['dateOfTransaction'].toString().split(' ')[0];
+                    return Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: Colors.blueAccent),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: ListTile(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
+                          );
+                        },
+                        contentPadding:const EdgeInsets.all(8),
+                        title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('रकम: $amount'),
+                                        Text('रसिद नं.: $receiptNo')
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('मिति: $dateOfTransaction'),
+                                        Row(
+                                          children: [
+                                            const Text('रकम भुक्तानि?'),
+                                            if (isAmountReceived.toString() == 'Yes')
+                                              Image.asset('assets/tick.png', width: 30, height: 30),
+                                            if (isAmountReceived.toString() == 'No')
+                                              Image.asset('assets/cross.png', width: 30, height: 30),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                            ),
+                          ],
+                        ),
+                        // Add more fields as needed
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            const Text(
+              'जेष्ठ नागरिक - नयाँ दर्ता',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left:8, right:8, bottom: 20.0),
+              child: SafeArea(
+                bottom: true,
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: newAged.length,
+                  itemBuilder: (context, index) {
+                    final family = newAged[index];
+                    final name = family['name'];
+                    final hiCode = family['hiCode'];
+                    final amount = family['annualFee'];
+                    final isAmountReceived = family['isAmountReceived'];
+                    final receiptNo = family['receiptNo'];
+                    final String dateOfTransaction = family['dateOfTransaction'].toString().split(' ')[0];
+                    return Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: Colors.blueAccent),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: ListTile(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
+                          );
+                        },
+                        contentPadding:const EdgeInsets.all(8),
+                        title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('रकम: $amount'),
+                                        Text('रसिद नं.: $receiptNo')
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('मिति: $dateOfTransaction'),
+                                        Row(
+                                          children: [
+                                            const Text('रकम भुक्तानि?'),
+                                            if (isAmountReceived.toString() == 'Yes')
+                                              Image.asset('assets/tick.png', width: 30, height: 30),
+                                            if (isAmountReceived.toString() == 'No')
+                                              Image.asset('assets/cross.png', width: 30, height: 30),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                            ),
+                          ],
+                        ),
+                        // Add more fields as needed
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            const Text(
+              'अशक्त परिवार - नयाँ दर्ता',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left:8, right:8, bottom: 20.0),
+              child: SafeArea(
+                bottom: true,
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: newDisabled.length,
+                  itemBuilder: (context, index) {
+                    final family = newDisabled[index];
+                    final name = family['name'];
+                    final hiCode = family['hiCode'];
+                    final amount = family['annualFee'];
+                    final isAmountReceived = family['isAmountReceived'];
+                    final receiptNo = family['receiptNo'];
+                    final String dateOfTransaction = family['dateOfTransaction'].toString().split(' ')[0];
+                    return Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: Colors.blueAccent),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: ListTile(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
+                          );
+                        },
+                        contentPadding:const EdgeInsets.all(8),
+                        title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('रकम: $amount'),
+                                        Text('रसिद नं.: $receiptNo')
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('मिति: $dateOfTransaction'),
+                                        Row(
+                                          children: [
+                                            const Text('रकम भुक्तानि?'),
+                                            if (isAmountReceived.toString() == 'Yes')
+                                              Image.asset('assets/tick.png', width: 30, height: 30),
+                                            if (isAmountReceived.toString() == 'No')
+                                              Image.asset('assets/cross.png', width: 30, height: 30),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                            ),
+                          ],
+                        ),
+                        // Add more fields as needed
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            const Text(
+              'अशक्त परिवार - नविकरण',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left:8, right:8, bottom: 100.0),
+              child: SafeArea(
+                bottom: true,
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: renewDisabled.length,
+                  itemBuilder: (context, index) {
+                    final family = renewDisabled[index];
+                    final name = family['name'];
+                    final hiCode = family['hiCode'];
+                    final amount = family['annualFee'];
+                    final isAmountReceived = family['isAmountReceived'];
+                    final receiptNo = family['receiptNo'];
+                    final String dateOfTransaction = family['dateOfTransaction'].toString().split(' ')[0];
+                    return Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: Colors.blueAccent),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: ListTile(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
+                          );
+                        },
+                        contentPadding:const EdgeInsets.all(8),
+                        title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
+                            Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('रकम: $amount'),
+                                        Text('रसिद नं.: $receiptNo')
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('मिति: $dateOfTransaction'),
+                                        Row(
+                                          children: [
+                                            const Text('रकम भुक्तानि?'),
+                                            if (isAmountReceived.toString() == 'Yes')
+                                              Image.asset('assets/tick.png', width: 30, height: 30),
+                                            if (isAmountReceived.toString() == 'No')
+                                              Image.asset('assets/cross.png', width: 30, height: 30),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                            ),
+                          ],
+                        ),
+                        // Add more fields as needed
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
           ],
         ),
       );

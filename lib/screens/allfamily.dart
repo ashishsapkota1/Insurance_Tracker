@@ -72,7 +72,7 @@ class _AllFamilyPageState extends State<AllFamilyPage> {
               onTap: (){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode)),
+                  MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
                 );
               },
               contentPadding:const EdgeInsets.all(8),

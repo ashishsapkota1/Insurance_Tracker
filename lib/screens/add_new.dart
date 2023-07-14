@@ -13,10 +13,6 @@ class AddFamily extends StatefulWidget {
 }
 
 class _AddFamilyState extends State<AddFamily> {
-
-  final Family family = Family(0, '', '', 0, '', '', '', 0, '', '');
-  final TransactionDetail transactionDetail =
-      TransactionDetail(0, 0, '', '', '', '', '', '');
   DatabaseHelper helper = DatabaseHelper();
   Database? _database;
 
@@ -67,17 +63,17 @@ class _AddFamilyState extends State<AddFamily> {
     NepaliDateTime thirdSession = NepaliDateTime(today.year, 7, 1);
     NepaliDateTime forthSession = NepaliDateTime(today.year, 10, 1);
     if (today.isAfter(firstSession) && today.isBefore(secondSession)) {
-      sessionDropdownValue = 'Baishakh-Jestha-Ashadh';
-      sessionController.text = 'Baishakh-Jestha-Ashadh';
+      sessionDropdownValue = 'बैशाख-जेठ-असार';
+      sessionController.text = 'बैशाख-जेठ-असार';
     } else if (today.isAfter(secondSession) && today.isBefore(thirdSession)) {
-      sessionDropdownValue = 'Shrawan-Bhadra-Ashwin';
-      sessionController.text = 'Shrawan-Bhadra-Ashwin';
+      sessionDropdownValue = 'साउन-भदौ-असोज';
+      sessionController.text = 'साउन-भदौ-असोज';
     } else if (today.isAfter(thirdSession) && today.isBefore(forthSession)) {
-      sessionDropdownValue = 'Kartik-Mangsir-Poush';
-      sessionController.text = 'Kartik-Mangsir-Poush';
+      sessionDropdownValue = 'कार्तिक-मंसिर-पुष';
+      sessionController.text = 'कार्तिक-मंसिर-पुष';
     } else {
-      sessionDropdownValue = 'Magh-Falgun-Chaitra';
-      sessionController.text = 'Magh-Falgun-Chaitra';
+      sessionDropdownValue = 'माघ-फागुन-चैत';
+      sessionController.text = 'माघ-फागुन-चैत';
     }
     familyTypeDropdownValue = 'General';
     yearsDropdownValue = NepaliDateTime.now().year.toString();
@@ -91,10 +87,10 @@ class _AddFamilyState extends State<AddFamily> {
   Widget build(BuildContext context) {
     var items = ['General', 'Aged', 'Disabled'];
     var sessionItems = [
-      'Baishakh-Jestha-Ashadh',
-      'Shrawan-Bhadra-Ashwin',
-      'Kartik-Mangsir-Poush',
-      'Magh-Falgun-Chaitra'
+      'बैशाख-जेठ-असार',
+      'साउन-भदौ-असोज',
+      'कार्तिक-मंसिर-पुष',
+      'माघ-फागुन-चैत'
     ];
     var transactionTypeItems = ['New', 'Renew'];
     var amountReceivedItems = ['Yes', 'No'];
@@ -116,7 +112,7 @@ class _AddFamilyState extends State<AddFamily> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Add New Family'),
+        title: const Text('नयाँ परिवार दर्ता'),
         backgroundColor: const Color(0xFF1a457c),
       ),
       body: SingleChildScrollView(
@@ -127,7 +123,7 @@ class _AddFamilyState extends State<AddFamily> {
               const Padding(
                 padding: EdgeInsets.only(top: 10),
                 child: Text(
-                  'Family Information',
+                  'परिवारको विवरण',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
@@ -142,8 +138,8 @@ class _AddFamilyState extends State<AddFamily> {
                     },
                     controller: familyHeadController,
                     decoration: InputDecoration(
-                        label: const Text('Family Head'),
-                        hintText: 'Name of Head of the Family',
+                        label: const Text('घरमूलीको नाम'),
+                        hintText: 'घरमूलीको नाम',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -162,8 +158,8 @@ class _AddFamilyState extends State<AddFamily> {
                     controller: membershipNoController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        label: const Text('Membership No.'),
-                        hintText: 'Membership No.',
+                        label: const Text('सदस्यता नं.'),
+                        hintText: 'सदस्यता नं.',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -174,8 +170,8 @@ class _AddFamilyState extends State<AddFamily> {
                     controller: phoneNoController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        label: const Text('Phone No.'),
-                        hintText: 'Phone No.',
+                        label: const Text('सम्पर्क नं.'),
+                        hintText: 'सम्पर्क नं.',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -185,8 +181,8 @@ class _AddFamilyState extends State<AddFamily> {
                   child: TextFormField(
                     controller: addressController,
                     decoration: InputDecoration(
-                        label: const Text('Address'),
-                        hintText: 'Address',
+                        label: const Text('ठेगाना'),
+                        hintText: 'ठेगाना',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -197,8 +193,8 @@ class _AddFamilyState extends State<AddFamily> {
                     controller: noOfMembersController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        label: const Text('No. of members'),
-                        hintText: 'No. of members',
+                        label: const Text('सदस्यको संख्या'),
+                        hintText: 'सदस्यको संख्या',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -209,8 +205,8 @@ class _AddFamilyState extends State<AddFamily> {
                     controller: annualFeeController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        label: const Text('Annual Fee'),
-                        hintText: 'Annual Fee',
+                        label: const Text('योगदान रकम'),
+                        hintText: 'योगदान रकम',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -219,7 +215,7 @@ class _AddFamilyState extends State<AddFamily> {
                   padding: const EdgeInsets.all(10),
                   child: DropdownButtonFormField(
                       decoration: InputDecoration(
-                          label: const Text('Family Type'),
+                          label: const Text('प्रकार'),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8))),
                       value: familyTypeDropdownValue,
@@ -236,14 +232,14 @@ class _AddFamilyState extends State<AddFamily> {
                         });
                       })),
               const Text(
-                'Transaction Information',
+                'दर्ता विवरण',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               Padding(
                   padding: const EdgeInsets.all(10),
                   child: DropdownButtonFormField(
                       decoration: InputDecoration(
-                          label: const Text('Transaction type'),
+                          label: const Text('नयाँ/नविकरण'),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8))),
                       value: transactionTypeDropdownValue,
@@ -263,7 +259,7 @@ class _AddFamilyState extends State<AddFamily> {
                   padding: const EdgeInsets.all(10),
                   child: DropdownButtonFormField(
                       decoration: InputDecoration(
-                          label: const Text('Year'),
+                          label: const Text('वर्ष'),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8))),
                       value: yearsDropdownValue,
@@ -283,7 +279,7 @@ class _AddFamilyState extends State<AddFamily> {
                 padding: const EdgeInsets.all(10),
                 child: DropdownButtonFormField(
                     decoration: InputDecoration(
-                        label: const Text('Session'),
+                        label: const Text('चरण'),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8))),
                     value: sessionDropdownValue,
@@ -306,8 +302,8 @@ class _AddFamilyState extends State<AddFamily> {
                     controller: receiptNoController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        label: const Text('Receipt No.'),
-                        hintText: 'Receipt No.',
+                        label: const Text('रसिद नं.'),
+                        hintText: 'रसिद नं.',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -322,7 +318,7 @@ class _AddFamilyState extends State<AddFamily> {
                       return null;
                     },
                     decoration: InputDecoration(
-                        label: const Text('Amount Received?'),
+                        label: const Text('रकम भुक्तानि'),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8))),
                     value: amountReceivedDropdownValue,

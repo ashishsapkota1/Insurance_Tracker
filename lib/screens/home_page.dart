@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hira/database_helper/database_helper.dart';
 import 'package:hira/screens/add_new.dart';
 import 'package:hira/screens/lapsed.dart';
 import 'package:hira/screens/search_family.dart';
 import 'package:hira/screens/thisSession.dart';
-
-import '../components/searchbar.dart';
 import 'allfamily.dart';
 
 class Homepage extends StatefulWidget {
@@ -41,7 +38,7 @@ class _HomepageState extends State<Homepage> {
           )
         ],
         centerTitle: true,
-        title: const Text('Insured Tracker'),
+        title: const Text('स्वास्थ्य बिमा'),
         backgroundColor: const Color(0xFF1a457c),
       ),
       body: Stack(
@@ -79,15 +76,15 @@ class _HomepageState extends State<Homepage> {
               items: const [
                 BottomNavigationBarItem(
                   icon: Icon(Icons.payment),
-                  label: 'This session',
+                  label: 'यो चरण',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.family_restroom),
-                  label: 'All family',
+                  label: 'बिमित परिवार',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.timelapse_rounded),
-                  label: 'Lapsed',
+                  label: 'व्यतित',
                 ),
               ],
             ),

@@ -52,21 +52,22 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
     if (familyData.isEmpty) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Family Details'),
+          title: const Text('परिवारको विवरण'),
         ),
         body: const Center(
           child: CircularProgressIndicator(),
         ),
       );
     } else {
+      final String id = familyData['family']['id'].toString();
       final String name = familyData['family']['name'].toString().toUpperCase();
-      final String memNo = familyData['family']['hiCode'].toString();
-      final String famNo = familyData['family']['membersNo'].toString();
+      final int memNo = familyData['family']['hiCode'];
+      final int famNo = familyData['family']['membersNo'];
       final String annualFee = familyData['family']['annualFee'].toString();
       final String contact = familyData['family']['phnNo'].toString();
       final String type = familyData['family']['type'].toString();
       final String address = familyData['family']['address'].toString();
-      final String renewalYear = familyData['family']['lastRenewalYear'].toString();
+      final int renewalYear = familyData['family']['lastRenewalYear'];
       final String renewalSession = familyData['family']['lastRenewalSession'].toString();
       final List<dynamic> transaction = familyData['transactions'];
 
@@ -74,7 +75,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.white),
           title: const Text(
-            'Family Details',
+            'परिवारको विवरण',
             style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
@@ -116,11 +117,11 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                      'Membership No.',
+                                      'सदस्यता नं.',
                                       style: TextStyle(color: Colors.grey),
                                     ),
                                     Text(
-                                      memNo,
+                                      memNo.toString(),
                                       style: const TextStyle(fontSize: 18, color: Colors.white),
                                     )
                                   ],
@@ -133,11 +134,11 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                      'No. of members.',
+                                      'सदस्य संख्या',
                                       style: TextStyle(color: Colors.grey),
                                     ),
                                     Text(
-                                      famNo,
+                                      famNo.toString(),
                                       style: const TextStyle(fontSize: 18, color: Colors.white),
                                     )
                                   ],
@@ -157,7 +158,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                      'Contact',
+                                      'सम्पर्क नं.',
                                       style: TextStyle(color: Colors.grey),
                                     ),
                                     GestureDetector(
@@ -185,7 +186,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
-                                      'Type',
+                                      'प्रकार',
                                       style: TextStyle(color: Colors.grey),
                                     ),
                                     Text(
@@ -206,7 +207,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  'Address',
+                                  'ठेगाना',
                                   style: TextStyle(color: Colors.grey),
                                 ),
                                 Text(
@@ -226,7 +227,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  'Last Renewal',
+                                  'अन्तिम नविकरण',
                                   style: TextStyle(color: Colors.grey),
                                 ),
                                 Text(
@@ -250,7 +251,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                 onPressed: (){
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => Renew(name: name, hiCode: memNo, amount: annualFee)),
+                                    MaterialPageRoute(builder: (context) => Renew(id: id.toString(), name: name, hiCode: memNo.toString(), amount: annualFee)),
                                   );
                                 },
                                 child: const Text('Renew')
@@ -293,15 +294,14 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                       itemCount: transaction.length,
                       itemBuilder: (context, index) {
                         final trans = transaction[index];
-                        final String renewalYear = trans['year'].toString();
+                        final int renewalYear = trans['year'];
                         final String renewalSession = trans['session'].toString();
                         final String receiptNo = trans['receiptNo'].toString();
                         final String amount = trans['amount'].toString();
                         final String date = trans['dateOfTransaction'].toString();
                         final String transactionType = trans['transactionType'].toString();
-                        final DateTime renewalDate = DateTime.parse(date);
-                        final String onlyDate =
-                            '${renewalDate.year.toString()}-${renewalDate.month.toString()}-${renewalDate.day.toString()}';
+                        final String isAmountReceived = trans['isAmountReceived'].toString();
+                        final String dateOfTransaction = date.split(' ')[0];
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: ListTile(
@@ -323,9 +323,9 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text('Receipt No: $receiptNo'),
-                                              Text('Date: $onlyDate'),
-                                              Text('Amount: $amount')
+                                              Text('रसिद नं.: $receiptNo'),
+                                              Text('मिति: $dateOfTransaction'),
+                                              Text('रकम: $amount')
                                             ],
                                           ),
                                     ),
@@ -336,10 +336,10 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                           children: [
                                             Row(
                                               children: [
-                                                const Text('Amount Received?'),
-                                                if (trans['isAmountReceived'] == 'Yes')
+                                                const Text('रकम भुक्तानि?'),
+                                                if (isAmountReceived == 'Yes')
                                                   Image.asset('assets/tick.png', width: 30, height: 30),
-                                                if (trans['isAmountReceived'] == 'No')
+                                                if (isAmountReceived == 'No')
                                                   Image.asset('assets/cross.png', width: 30, height: 30),
                                               ],
                                             ),

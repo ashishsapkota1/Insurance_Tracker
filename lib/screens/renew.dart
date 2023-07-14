@@ -4,11 +4,12 @@ import 'package:hira/database_helper/database_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Renew extends StatefulWidget {
+  final String id;
   final String name;
   final String hiCode;
   final String amount;
 
-  const Renew({super.key, required this.name, required this.hiCode, required this.amount});
+  const Renew({super.key, required this.id, required this.name, required this.hiCode, required this.amount});
 
   @override
   State<Renew> createState() => _RenewState();
@@ -50,17 +51,17 @@ class _RenewState extends State<Renew> {
     NepaliDateTime thirdSession = NepaliDateTime(today.year, 7, 1);
     NepaliDateTime forthSession = NepaliDateTime(today.year, 10, 1);
     if (today.isAfter(firstSession) && today.isBefore(secondSession)) {
-      sessionDropdownValue = 'Baishakh-Jestha-Ashadh';
-      sessionController.text = 'Baishakh-Jestha-Ashadh';
+      sessionDropdownValue = 'बैशाख-जेठ-असार';
+      sessionController.text = 'बैशाख-जेठ-असार';
     } else if (today.isAfter(secondSession) && today.isBefore(thirdSession)) {
-      sessionDropdownValue = 'Shrawan-Bhadra-Ashwin';
-      sessionController.text = 'Shrawan-Bhadra-Ashwin';
+      sessionDropdownValue = 'साउन-भदौ-असोज';
+      sessionController.text = 'साउन-भदौ-असोज';
     } else if (today.isAfter(thirdSession) && today.isBefore(forthSession)) {
-      sessionDropdownValue = 'Kartik-Mangsir-Poush';
-      sessionController.text = 'Kartik-Mangsir-Poush';
+      sessionDropdownValue = 'कार्तिक-मंसिर-पुष';
+      sessionController.text = 'कार्तिक-मंसिर-पुष';
     } else {
-      sessionDropdownValue = 'Magh-Falgun-Chaitra';
-      sessionController.text = 'Magh-Falgun-Chaitra';
+      sessionDropdownValue = 'माघ-फागुन-चैत';
+      sessionController.text = 'माघ-फागुन-चैत';
     }
     yearsDropdownValue = NepaliDateTime.now().year.toString();
     amountReceivedDropdownValue = 'Yes';
@@ -69,10 +70,10 @@ class _RenewState extends State<Renew> {
   @override
   Widget build(BuildContext context) {
     var sessionItems = [
-      'Baishakh-Jestha-Ashadh',
-      'Shrawan-Bhadra-Ashwin',
-      'Kartik-Mangsir-Poush',
-      'Magh-Falgun-Chaitra'
+      'बैशाख-जेठ-असार',
+      'साउन-भदौ-असोज',
+      'कार्तिक-मंसिर-पुष',
+      'माघ-फागुन-चैत'
     ];
     var amountReceivedItems = ['Yes', 'No'];
     List<String> getYears(int year) {
@@ -93,7 +94,7 @@ class _RenewState extends State<Renew> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Renew Insurance'),
+        title: const Text('नविकरण'),
         backgroundColor: const Color(0xFF1a457c),
       ),
       body: SingleChildScrollView(
@@ -104,7 +105,7 @@ class _RenewState extends State<Renew> {
               const Padding(
                 padding: EdgeInsets.only(top: 10),
                 child: Text(
-                  'Family Information',
+                  'परिवारको विवरण',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
@@ -114,8 +115,8 @@ class _RenewState extends State<Renew> {
                     readOnly: true,
                     initialValue: widget.name,
                     decoration: InputDecoration(
-                        label: const Text('Family Head'),
-                        hintText: 'Name of Head of the Family',
+                        label: const Text('घरमूलीको नाम'),
+                        hintText: 'घरमूलीको नाम',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -127,8 +128,8 @@ class _RenewState extends State<Renew> {
                     readOnly: true,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        label: const Text('Membership No.'),
-                        hintText: 'Membership No.',
+                        label: const Text('सदस्यता नं.'),
+                        hintText: 'सदस्यता नं.',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -140,8 +141,8 @@ class _RenewState extends State<Renew> {
                     readOnly: true,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        label: const Text('Annual Fee'),
-                        hintText: 'Annual Fee',
+                        label: const Text('योगदान रकम'),
+                        hintText: 'योगदान रकम',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -154,7 +155,7 @@ class _RenewState extends State<Renew> {
                   padding: const EdgeInsets.all(10),
                   child: DropdownButtonFormField(
                       decoration: InputDecoration(
-                          label: const Text('Year'),
+                          label: const Text('वर्ष'),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8))),
                       value: yearsDropdownValue,
@@ -174,7 +175,7 @@ class _RenewState extends State<Renew> {
                 padding: const EdgeInsets.all(10),
                 child: DropdownButtonFormField(
                     decoration: InputDecoration(
-                        label: const Text('Session'),
+                        label: const Text('चरण'),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8))),
                     value: sessionDropdownValue,
@@ -197,8 +198,8 @@ class _RenewState extends State<Renew> {
                     controller: receiptNoController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                        label: const Text('Receipt No.'),
-                        hintText: 'Receipt No.',
+                        label: const Text('रसिद नं.'),
+                        hintText: 'रसिद नं.',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         )),
@@ -213,7 +214,7 @@ class _RenewState extends State<Renew> {
                       return null;
                     },
                     decoration: InputDecoration(
-                        label: const Text('Amount Received?'),
+                        label: const Text('रकम भुक्तानि'),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8))),
                     value: amountReceivedDropdownValue,
@@ -245,7 +246,7 @@ class _RenewState extends State<Renew> {
                     });
                   },
                   child: const Text(
-                    'Add',
+                    'नविकरण गर्नुहोस्',
                     style: TextStyle(color: Colors.white),
                   )),
               const SizedBox(height: 20)
@@ -258,6 +259,7 @@ class _RenewState extends State<Renew> {
 
   void _save() async {
     int result = (await helper.renewInsurance(
+        widget.id,
         widget.hiCode,
         widget.amount,
         receiptNoController,

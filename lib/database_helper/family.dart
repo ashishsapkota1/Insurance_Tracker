@@ -3,7 +3,6 @@ class Family {
   final int hiCode;
   final String phnNo;
   final int membersNo;
-  final String renewalSession;
   final String annualFee;
   final String type;
   final int lastRenewalYear;
@@ -15,7 +14,6 @@ class Family {
       this.name,
       this.phnNo,
       this.membersNo,
-      this.renewalSession,
       this.annualFee,
       this.type,
       this.lastRenewalYear,
@@ -28,22 +26,6 @@ class Family {
     map['name'] = name;
     map['phnNo'] = phnNo;
     map['membersNo'] = membersNo;
-    map['renewalSession'] = renewalSession;
-    map['annualFee'] = annualFee;
-    map['type'] = type;
-    map['lastRenewalYear'] = lastRenewalYear;
-    map['lastRenewalSession'] = lastRenewalSession;
-    map['address'] = address;
-
-    return map;
-  }
-
-  Map<String, dynamic> updateFamilyMap() {
-    var map = <String, dynamic>{};
-    map['name'] = name;
-    map['phnNo'] = phnNo;
-    map['membersNo'] = membersNo;
-    map['renewalSession'] = renewalSession;
     map['annualFee'] = annualFee;
     map['type'] = type;
     map['lastRenewalYear'] = lastRenewalYear;
@@ -55,7 +37,6 @@ class Family {
 
   Map<String, dynamic> updateFamilyWhileRenew() {
     var map = <String, dynamic>{};
-    map['renewalSession'] = renewalSession;
     map['lastRenewalYear'] = lastRenewalYear;
     map['lastRenewalSession'] = lastRenewalSession;
 

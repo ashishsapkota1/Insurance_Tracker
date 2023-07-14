@@ -1,5 +1,5 @@
 class TransactionDetail{
-  int? id;
+  // int? id;
   final int family;
   final int year;
   final String session;
@@ -11,14 +11,14 @@ class TransactionDetail{
 
   TransactionDetail(this.family, this.year, this.session, this.amount, this.dateOfTransaction, this.isAmountReceived,this.transactionType, this.receiptNo);
 
-  TransactionDetail.withId(this.id, this.family, this.year, this.session, this.amount, this.dateOfTransaction, this.isAmountReceived,this.transactionType, this.receiptNo);
+  // TransactionDetail.withId(this.id, this.family, this.year, this.session, this.amount, this.dateOfTransaction, this.isAmountReceived,this.transactionType, this.receiptNo);
 
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{};
-    if (id != null) {
-      map['id'] = id;
-    }
+    // if (id != null) {
+    //   map['id'] = id;
+    // }
     map['family'] = family;
     map['year'] = year;
     map['session'] = session;

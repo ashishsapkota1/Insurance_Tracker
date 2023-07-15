@@ -31,4 +31,15 @@ class TransactionDetail{
     return map;
   }
 
+  Map<String, dynamic> updateTransaction() {
+    var map = <String, dynamic>{};
+    map['year'] = year;
+    map['session'] = session;
+    map['amount'] = amount;
+    map['isAmountReceived'] = isAmountReceived;
+    map['transactionType'] = transactionType;
+    map['receiptNo'] = receiptNo;
+    return map;
+  }
+
 }

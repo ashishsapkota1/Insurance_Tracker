@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:hira/database_helper/database_helper.dart';
-import 'package:sqflite/sqflite.dart';
 
 class Renew extends StatefulWidget {
   final String id;
@@ -18,7 +17,6 @@ class Renew extends StatefulWidget {
 class _RenewState extends State<Renew> {
 
   DatabaseHelper helper = DatabaseHelper();
-  Database? _database;
 
   String sessionDropdownValue = '';
   String yearsDropdownValue = '';
@@ -284,10 +282,5 @@ class _RenewState extends State<Renew> {
       context: context,
       builder: (_) => alertDialog,
     );
-  }
-
-  Future<Database?> openDB() async {
-    _database = await DatabaseHelper().openDB();
-    return _database;
   }
 }

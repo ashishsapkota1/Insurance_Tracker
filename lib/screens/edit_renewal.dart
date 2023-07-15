@@ -2,46 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:hira/database_helper/database_helper.dart';
 
-class EditFamily extends StatefulWidget {
-  final int hiCode;
+class EditRenewal extends StatefulWidget {
+  final String id;
 
-  const EditFamily({super.key, required this.hiCode});
+  const EditRenewal({super.key, required this.id});
 
   @override
-  State<EditFamily> createState() => _EditFamilyState();
+  State<EditRenewal> createState() => _EditRenewalState();
 }
 
-class _EditFamilyState extends State<EditFamily> {
-  Map<String, dynamic> familyData = {};
+class _EditRenewalState extends State<EditRenewal> {
+  Map<String, dynamic> renewalData = {};
   DatabaseHelper helper = DatabaseHelper();
 
   String sessionDropdownValue = '';
-  String familyTypeDropdownValue = '';
   String yearsDropdownValue = '';
+  String transactionTypeDropdownValue = '';
+  String amountReceivedDropdownValue = '';
 
   NepaliDateTime today = NepaliDateTime.now();
 
-  TextEditingController familyHeadController = TextEditingController();
   TextEditingController membershipNoController = TextEditingController();
-  TextEditingController phoneNoController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController noOfMembersController = TextEditingController();
   TextEditingController annualFeeController = TextEditingController();
-  TextEditingController familyTypeController = TextEditingController();
   TextEditingController yearController = TextEditingController();
   TextEditingController sessionController = TextEditingController();
+  TextEditingController receiptNoController = TextEditingController();
+  TextEditingController transactionTypeController = TextEditingController();
+  TextEditingController amountReceivedController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose(){
     membershipNoController.dispose();
-    phoneNoController.dispose();
-    noOfMembersController.dispose();
     annualFeeController.dispose();
-    familyTypeController.dispose();
     yearController.dispose();
     sessionController.dispose();
+    receiptNoController.dispose();
+    transactionTypeController.dispose();
+    amountReceivedController.dispose();
     super.dispose();
   }
 
@@ -49,42 +48,42 @@ class _EditFamilyState extends State<EditFamily> {
   @override
   void initState() {
     super.initState();
-    fetchFamilyData(widget.hiCode);
+    fetchRenewalData(widget.id);
   }
 
-  Future<void> fetchFamilyData(int hiCode) async {
+  Future<void> fetchRenewalData(String id) async {
     final databaseHelper = DatabaseHelper();
-    final data = await databaseHelper.getOneFamily(hiCode);
+    final data = await databaseHelper.getOneRenewal(id);
     setState(() {
-      familyData = data;
+      renewalData = data;
     });
     initializeFields();
   }
 
   void initializeFields(){
-    familyHeadController.text = familyData['family']['name'].toString();
-    membershipNoController.text = familyData['family']['hiCode'].toString();
-    phoneNoController.text = familyData['family']['phnNo'].toString();
-    noOfMembersController.text = familyData['family']['membersNo'].toString();
-    annualFeeController.text = familyData['family']['annualFee'].toString();
-    familyTypeController.text = familyData['family']['type'].toString();
-    familyTypeDropdownValue = familyData['family']['type'].toString();
-    yearController.text = familyData['family']['lastRenewalYear'].toString();
-    yearsDropdownValue = familyData['family']['lastRenewalYear'].toString();
-    sessionController.text = familyData['family']['lastRenewalSession'].toString();
-    sessionDropdownValue = familyData['family']['lastRenewalSession'].toString();
-    addressController.text = familyData['family']['address'].toString();
+    membershipNoController.text = renewalData['family'].toString();
+    annualFeeController.text = renewalData['amount'].toString();
+    yearController.text = renewalData['year'].toString();
+    yearsDropdownValue = renewalData['year'].toString();
+    sessionController.text = renewalData['session'].toString();
+    sessionDropdownValue = renewalData['session'].toString();
+    receiptNoController.text = renewalData['receiptNo'].toString();
+    transactionTypeDropdownValue = renewalData['transactionType'].toString();
+    transactionTypeController.text = renewalData['transactionType'].toString();
+    amountReceivedDropdownValue = renewalData['isAmountReceived'].toString();
+    amountReceivedController.text = renewalData['isAmountReceived'].toString();
   }
 
   @override
   Widget build(BuildContext context) {
-    var items = ['General', 'Aged', 'Disabled'];
     var sessionItems = [
       'बैशाख-जेठ-असार',
       'साउन-भदौ-असोज',
       'कार्तिक-मंसिर-पुष',
       'माघ-फागुन-चैत'
     ];
+    var transactionTypeItems = ['New', 'Renew'];
+    var amountReceivedItems = ['Yes', 'No'];
     List<String> getYears(int year) {
       int currentYear = NepaliDateTime.now().year;
 
@@ -100,10 +99,10 @@ class _EditFamilyState extends State<EditFamily> {
 
     var yearsList = getYears(2075);
 
-    if (familyData.isEmpty) {
+    if (renewalData.isEmpty) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text('परिवार सम्पादन'),
+          title: const Text('नविकरण सम्पादन'),
         ),
         body: const Center(
           child: CircularProgressIndicator(),
@@ -113,7 +112,7 @@ class _EditFamilyState extends State<EditFamily> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('परिवार सम्पादन'),
+          title: const Text('नविकरण सम्पादन'),
           backgroundColor: const Color(0xFF1a457c),
         ),
         body: SingleChildScrollView(
@@ -125,23 +124,6 @@ class _EditFamilyState extends State<EditFamily> {
                     padding: const EdgeInsets.all(10),
                     child: TextFormField(
                       validator: (value){
-                        if(value==null || value.isEmpty){
-                          return 'Please enter Name';
-                        }
-                        return null;
-                      },
-                      controller: familyHeadController,
-                      decoration: InputDecoration(
-                          label: const Text('घरमूलीको नाम'),
-                          hintText: 'घरमूलीको नाम',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          )),
-                    )),
-                Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextFormField(
-                      validator: (value){
                         if(value == null || value.isEmpty){
                           return 'Please enter HICODE';
                         }else if(value.length<9 || value.length>9){
@@ -149,6 +131,7 @@ class _EditFamilyState extends State<EditFamily> {
                         }
                         return null;
                       },
+                      readOnly: true,
                       controller: membershipNoController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
@@ -160,35 +143,53 @@ class _EditFamilyState extends State<EditFamily> {
                     )),
                 Padding(
                     padding: const EdgeInsets.all(10),
-                    child: TextFormField(
-                      controller: phoneNoController,
-                      keyboardType: TextInputType.number,
+                    child: DropdownButtonFormField(
+                        decoration: InputDecoration(
+                            label: const Text('नविकरण वर्ष'),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8))),
+                        value: yearsDropdownValue,
+                        items: yearsList.map((String item) {
+                          return DropdownMenuItem(
+                            value: item,
+                            child: Text(item),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            yearsDropdownValue = newValue!;
+                            yearController.text = newValue;
+                          });
+                        })),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: DropdownButtonFormField(
                       decoration: InputDecoration(
-                          label: const Text('सम्पर्क नं.'),
-                          hintText: 'सम्पर्क नं.',
+                          label: const Text('नविकरण चरण'),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          )),
-                    )),
+                              borderRadius: BorderRadius.circular(8))),
+                      value: sessionDropdownValue,
+                      items: sessionItems.map((String item) {
+                        return DropdownMenuItem(
+                          value: item,
+                          child: Text(item),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          sessionDropdownValue = newValue!;
+                          sessionController.text = newValue;
+                        });
+                      }),
+                ),
                 Padding(
                     padding: const EdgeInsets.all(10),
                     child: TextFormField(
-                      controller: addressController,
-                      decoration: InputDecoration(
-                          label: const Text('ठेगाना'),
-                          hintText: 'ठेगाना',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          )),
-                    )),
-                Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextFormField(
-                      controller: noOfMembersController,
+                      controller: receiptNoController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                          label: const Text('सदस्य संख्या'),
-                          hintText: 'सदस्य संख्या',
+                          label: const Text('रसिद नं.'),
+                          hintText: 'रसिद नं.',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           )),
@@ -209,11 +210,11 @@ class _EditFamilyState extends State<EditFamily> {
                     padding: const EdgeInsets.all(10),
                     child: DropdownButtonFormField(
                         decoration: InputDecoration(
-                            label: const Text('प्रकार'),
+                            label: const Text('नयाँ/नविकरण'),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8))),
-                        value: familyTypeDropdownValue,
-                        items: items.map((String item) {
+                        value: transactionTypeDropdownValue,
+                        items: transactionTypeItems.map((String item) {
                           return DropdownMenuItem(
                             value: item,
                             child: Text(item),
@@ -221,39 +222,25 @@ class _EditFamilyState extends State<EditFamily> {
                         }).toList(),
                         onChanged: (String? newValue) {
                           setState(() {
-                            familyTypeDropdownValue = newValue!;
-                            familyTypeController.text = newValue;
-                          });
-                        })),
-                Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: DropdownButtonFormField(
-                        decoration: InputDecoration(
-                            label: const Text('अन्तिम नविकरण वर्ष'),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8))),
-                        value: yearsDropdownValue,
-                        items: yearsList.map((String item) {
-                          return DropdownMenuItem(
-                            value: item,
-                            child: Text(item),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            yearsDropdownValue = newValue!;
-                            yearController.text = newValue;
+                            transactionTypeDropdownValue = newValue!;
+                            transactionTypeController.text = newValue;
                           });
                         })),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: DropdownButtonFormField(
+                      validator: (value){
+                        if(value == null || value.isEmpty){
+                          return 'Please select an item';
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
-                          label: const Text('चरण'),
+                          label: const Text('रकम भुक्तानि'),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8))),
-                      value: sessionDropdownValue,
-                      items: sessionItems.map((String item) {
+                      value: amountReceivedDropdownValue,
+                      items: amountReceivedItems.map((String item) {
                         return DropdownMenuItem(
                           value: item,
                           child: Text(item),
@@ -261,8 +248,8 @@ class _EditFamilyState extends State<EditFamily> {
                       }).toList(),
                       onChanged: (String? newValue) {
                         setState(() {
-                          sessionDropdownValue = newValue!;
-                          sessionController.text = newValue;
+                          amountReceivedDropdownValue = newValue!;
+                          amountReceivedController.text = newValue;
                         });
                       }),
                 ),
@@ -294,22 +281,20 @@ class _EditFamilyState extends State<EditFamily> {
   }
 
   void _save() async {
-    int result = (await helper.updateFamily(
-        familyData['family']['id'].toString(),
-        familyHeadController,
+    int result = (await helper.updateRenewal(
+        widget.id,
         membershipNoController,
-        phoneNoController,
-        addressController,
-        noOfMembersController,
         annualFeeController,
-        familyTypeController,
         yearController,
-        sessionController));
+        sessionController,
+        amountReceivedController,
+        transactionTypeController,
+        receiptNoController));
     if (result != 0) {
-      _showAlertDialog('Status', "Family Updated Successfully.");
-      fetchFamilyData(widget.hiCode);
+      _showAlertDialog('Status', "Renewal Updated Successfully.");
+      fetchRenewalData(widget.id);
     } else {
-      _showAlertDialog('Status', "Failed to update family.");
+      _showAlertDialog('Status', "Failed to update renewal.");
     }
   }
 

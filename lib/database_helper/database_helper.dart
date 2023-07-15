@@ -1,27 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hira/database_helper/family.dart';
 import 'package:hira/database_helper/transaction.dart';
-import 'package:hira/database_helper/user_Repo.dart';
 import 'package:nepali_utils/nepali_utils.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _databaseHelper = DatabaseHelper._internal();
-  static Database? _database;
 
   factory DatabaseHelper() {
     return _databaseHelper;
   }
 
   DatabaseHelper._internal();
-
-  Future<Database?> openDB() async {
-    _database =
-        await openDatabase(join(await getDatabasesPath(), 'insurance.db'));
-    return _database;
-  }
 
   Future<int> insertFamily(
       TextEditingController familyHeadController,
@@ -36,9 +26,6 @@ class DatabaseHelper {
       TextEditingController yearController,
       TextEditingController sessionController,
       TextEditingController amountReceivedController) async {
-    _database = await openDB();
-    UserRepo userRepo = UserRepo();
-    userRepo.createDb(_database);
     try {
       Family familyData = Family(
           int.tryParse(membershipNoController.text) ?? 0,
@@ -62,8 +49,8 @@ class DatabaseHelper {
         transactionTypeController.text,
         receiptNoController.text,
       );
-      await FirebaseFirestore.instance.collection("family").add(familyData.toMap());
-      await FirebaseFirestore.instance.collection("renewals").add(transactionData.toMap());
+      FirebaseFirestore.instance.collection("family").add(familyData.toMap());
+      FirebaseFirestore.instance.collection("renewals").add(transactionData.toMap());
       return 1;
     } catch(error){
       return 0;
@@ -93,7 +80,34 @@ class DatabaseHelper {
           sessionController.text,
           addressController.text
       );
-      await FirebaseFirestore.instance.collection("family").doc(id).update(familyData.toMap());
+      FirebaseFirestore.instance.collection("family").doc(id).update(familyData.toMap());
+      return 1;
+    } catch(error){
+      return 0;
+    }
+  }
+
+  Future<int> updateRenewal(
+      String id,
+      TextEditingController membershipNoController,
+      TextEditingController annualFeeController,
+      TextEditingController yearController,
+      TextEditingController sessionController,
+      TextEditingController amountReceivedController,
+      TextEditingController transactionTypeController,
+      TextEditingController receiptNoController) async {
+    try {
+      TransactionDetail transactionData = TransactionDetail(
+        0,
+        int.tryParse(yearController.text) ?? 0,
+        sessionController.text,
+        annualFeeController.text,
+        '',
+        amountReceivedController.text,
+        transactionTypeController.text,
+        receiptNoController.text,
+      );
+      FirebaseFirestore.instance.collection("renewals").doc(id).update(transactionData.updateTransaction());
       return 1;
     } catch(error){
       return 0;
@@ -108,9 +122,6 @@ class DatabaseHelper {
       TextEditingController yearController,
       TextEditingController sessionController,
       TextEditingController amountReceivedController) async {
-    _database = await openDB();
-    UserRepo userRepo = UserRepo();
-    userRepo.createDb(_database);
     try {
       Family familyData = Family(
           0,
@@ -135,7 +146,7 @@ class DatabaseHelper {
       );
 
       final List<Map<String, dynamic>> renewal = [];
-      await FirebaseFirestore.instance.collection("renewals")
+      FirebaseFirestore.instance.collection("renewals")
         .where("family", isEqualTo: int.tryParse(hiCode))
         .where("year", isEqualTo: int.tryParse(yearController.text))
         .where("session", isEqualTo: sessionController.text)
@@ -147,8 +158,8 @@ class DatabaseHelper {
         }
       );
       if (renewal.isEmpty){
-        await FirebaseFirestore.instance.collection("family").doc(docId).update(familyData.updateFamilyWhileRenew());
-        await FirebaseFirestore.instance.collection("renewals").add(transactionData.toMap());
+        FirebaseFirestore.instance.collection("family").doc(docId).update(familyData.updateFamilyWhileRenew());
+        FirebaseFirestore.instance.collection("renewals").add(transactionData.toMap());
         return 1;
       }
       else {
@@ -195,6 +206,18 @@ class DatabaseHelper {
       'transactions': allRenewals
     };
     return oneFamily;
+  }
+
+  Future<Map<String, dynamic>> getOneRenewal(String id) async {
+    Map<String, dynamic> oneRenewal = {};
+    await FirebaseFirestore.instance.collection("renewals").doc(id).get().then(
+          (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        final docId = doc.id;
+        oneRenewal = {'id': docId, ...data};
+      }
+    );
+    return oneRenewal;
   }
 
 
@@ -272,11 +295,11 @@ class DatabaseHelper {
     return thisSession;
   }
 
-  Future<List<Map<String, dynamic>>> searchData(String searchTerm) async {
-    await openDB();
-
-    return _database!.query('familyTable',
-        where: 'LOWER(hiCode) LIKE LOWER(?) OR LOWER(name) LIKE LOWER(?)',
-        whereArgs: ['%$searchTerm%', '%$searchTerm%']);
-  }
+  // Future<List<Map<String, dynamic>>> searchData(String searchTerm) async {
+  //   await openDB();
+  //
+  //   return _database!.query('familyTable',
+  //       where: 'LOWER(hiCode) LIKE LOWER(?) OR LOWER(name) LIKE LOWER(?)',
+  //       whereArgs: ['%$searchTerm%', '%$searchTerm%']);
+  // }
 }

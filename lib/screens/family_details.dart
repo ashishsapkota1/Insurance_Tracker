@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hira/screens/edit_family.dart';
+import 'package:hira/screens/edit_renewal.dart';
 import 'package:hira/screens/renew.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
+import 'package:nepali_utils/nepali_utils.dart';
 
 class FamilyDetailsPage extends StatefulWidget {
   final String hiCode;
@@ -294,6 +296,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                       itemCount: transaction.length,
                       itemBuilder: (context, index) {
                         final trans = transaction[index];
+                        final String id = trans['id'].toString();
                         final int renewalYear = trans['year'];
                         final String renewalSession = trans['session'].toString();
                         final String receiptNo = trans['receiptNo'].toString();
@@ -301,7 +304,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                         final String date = trans['dateOfTransaction'].toString();
                         final String transactionType = trans['transactionType'].toString();
                         final String isAmountReceived = trans['isAmountReceived'].toString();
-                        final String dateOfTransaction = date.split(' ')[0];
+                        final String dateOfTransaction = NepaliDateFormat("yyyy.MMMM.dd").format(NepaliDateTime.parse(date));
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: ListTile(
@@ -325,39 +328,60 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                             children: [
                                               Text('रसिद नं.: $receiptNo'),
                                               Text('मिति: $dateOfTransaction'),
-                                              Text('रकम: $amount')
+                                              Text('रकम: $amount'),
+                                              Row(
+                                                children: [
+                                                  const Text('रकम भुक्तानि?'),
+                                                  if (isAmountReceived == 'Yes')
+                                                    Image.asset('assets/tick.png', width: 30, height: 30),
+                                                  if (isAmountReceived == 'No')
+                                                    Image.asset('assets/cross.png', width: 30, height: 30),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    padding: const EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2),
+                                                    decoration: BoxDecoration(
+                                                        color: (transactionType == 'New' ?  const Color(0xFF5dbea3) : const Color(0xFF1a457c)),
+                                                        borderRadius: BorderRadius.circular(8)
+                                                    ),
+                                                    child: Text(
+                                                      transactionType,
+                                                      style: const TextStyle(color: Colors.white),
+                                                    ),
+                                                  )
+                                                ],
+                                              )
                                             ],
                                           ),
                                     ),
                                     Expanded(
                                       child:
                                         Column (
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
-                                            Row(
-                                              children: [
-                                                const Text('रकम भुक्तानि?'),
-                                                if (isAmountReceived == 'Yes')
-                                                  Image.asset('assets/tick.png', width: 30, height: 30),
-                                                if (isAmountReceived == 'No')
-                                                  Image.asset('assets/cross.png', width: 30, height: 30),
-                                              ],
+                                            ElevatedButton(
+                                                style: ButtonStyle(
+                                                    backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF1a457c))
+                                                ),
+                                                onPressed: (){
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => EditRenewal(id: id)),
+                                                  );
+                                                },
+                                                child: const Text('Edit')
                                             ),
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  padding: const EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2),
-                                                  decoration: BoxDecoration(
-                                                    color: (transactionType == 'New' ?  const Color(0xFF5dbea3) : const Color(0xFF1a457c)),
-                                                    borderRadius: BorderRadius.circular(8)
-                                                  ),
-                                                  child: Text(
-                                                    transactionType,
-                                                    style: const TextStyle(color: Colors.white),
-                                                  ),
-                                                )
-                                              ],
-                                            )
+                                            ElevatedButton(
+                                                style: ButtonStyle(
+                                                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
+                                                ),
+                                                onPressed: (){
+
+                                                },
+                                                child: const Text('Delete')
+                                            ),
                                           ],
                                         )
                                     ),

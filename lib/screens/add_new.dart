@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hira/database_helper/transaction.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:hira/database_helper/database_helper.dart';
-import 'package:hira/database_helper/family.dart';
-import 'package:sqflite/sqflite.dart';
 
 class AddFamily extends StatefulWidget {
   const AddFamily({Key? key}) : super(key: key);
@@ -14,7 +11,6 @@ class AddFamily extends StatefulWidget {
 
 class _AddFamilyState extends State<AddFamily> {
   DatabaseHelper helper = DatabaseHelper();
-  Database? _database;
 
   String sessionDropdownValue = '';
   String familyTypeDropdownValue = '';
@@ -398,8 +394,4 @@ class _AddFamilyState extends State<AddFamily> {
     );
   }
 
-  Future<Database?> openDB() async {
-    _database = await DatabaseHelper().openDB();
-    return _database;
-  }
 }

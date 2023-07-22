@@ -227,6 +227,7 @@ class DatabaseHelper {
     await FirebaseFirestore.instance.collection("renewals")
         .where("year", isEqualTo: year)
         .where("session", isEqualTo: session)
+        .orderBy('receiptNo')
         .get().then(
             (querySnapshot) {
           for (var docSnapshot in querySnapshot.docs) {
@@ -264,7 +265,9 @@ class DatabaseHelper {
             "isAmountReceived": renew['isAmountReceived'],
             "annualFee": renew['amount'],
             "receiptNo": renew['receiptNo'],
-            "dateOfTransaction": renew['dateOfTransaction']
+            "dateOfTransaction": renew['dateOfTransaction'],
+            "phnNo": fam['phnNo'],
+            "membersNo": fam['membersNo']
           };
           if (renew['family'] == fam['hiCode']) {
             if (renew['transactionType'] == 'New' && fam['type'] == "General") {

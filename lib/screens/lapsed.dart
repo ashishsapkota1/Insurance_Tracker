@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hira/screens/family_details.dart';
 import 'package:hira/screens/renew.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../database_helper/database_helper.dart';
@@ -106,6 +107,12 @@ class _LapsedPageState extends State<LapsedPage> {
                           side: const BorderSide(color: Colors.blueAccent),
                           borderRadius: BorderRadius.circular(8)),
                       child: ListTile(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
+                          );
+                        },
                         contentPadding:const EdgeInsets.all(8),
                         title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                         subtitle: Column(

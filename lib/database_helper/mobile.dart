@@ -1,51 +1,54 @@
-import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
-class PDFHelper {
-  static final PDFHelper _pdfHelper = PDFHelper._internal();
+class ExcelHelper {
+  static final ExcelHelper _excelHelper = ExcelHelper._internal();
 
-  factory PDFHelper() {
-    return _pdfHelper;
+  factory ExcelHelper() {
+    return _excelHelper;
   }
 
-  PDFHelper._internal();
+  ExcelHelper._internal();
 
-  Future<void> createPDF() async {
-    PdfDocument document = PdfDocument();
-    document.pageSettings.size = PdfPageSize.a4;
-    PdfGrid grid = PdfGrid();
-    PdfFont font = PdfStandardFont(PdfFontFamily.helvetica, 12);
-    grid.columns.add(count: 6);
+  Future<void> createExcel(Map<String, dynamic> familyData) async {
+    final List<dynamic> newGeneral = familyData['newGeneral'];
+    final Workbook workbook = Workbook();
+    final Worksheet sheet = workbook.worksheets[0];
 
-    grid.headers.add(1);
-    PdfGridRow header = grid.headers[0];
-    header.cells[0].value = 'रसिद नं.';
-    header.cells[1].value = 'घरमुलीको नाम';
-    header.cells[2].value = 'घरमुलीको बीमा नं.';
-    header.cells[3].value = 'मोबाइल नं.';
-    header.cells[4].value = 'सदस्य संख्या';
-    header.cells[5].value = 'योगदान रकम';
-    // header.cells[0].value = 'Receipt';
-    // header.cells[1].value = 'Name';
-    // header.cells[2].value = 'HI Code';
-    // header.cells[3].value = 'Mobile';
-    // header.cells[4].value = 'Member';
-    // header.cells[5].value = 'Amount';
+    Style globalStyle = workbook.styles.add('style');
+    globalStyle.fontSize = 14;
+    // Enable calculation for worksheet.
+    sheet.enableSheetCalculations();
 
-    grid.style = PdfGridStyle(
-        cellPadding: PdfPaddings(left: 2, right: 3, top: 4, bottom: 5),
-        backgroundBrush: PdfBrushes.gray,
-        textBrush: PdfBrushes.black,
-        font: font);
-    grid.draw(page: document.pages.add(), bounds: const Rect.fromLTWH(0, 0, 0, 0));
+    //Set data in the worksheet.
+    sheet.getRangeByName('A1').columnWidth = 7.50;
+    sheet.getRangeByName('B1:C1').columnWidth = 13.82;
+    sheet.getRangeByName('D1').columnWidth = 13.20;
+    sheet.getRangeByName('E1').columnWidth = 7.50;
+    sheet.getRangeByName('F1').columnWidth = 7.50;
 
-    List<int> bytes = await document.save();
-    document.dispose();
-    saveAndLaunchFile(bytes, 'output.pdf');
+    sheet.getRangeByName('A1:F1').merge();
+    sheet.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh');
+
+    sheet.getRangeByName('A3').setText('रसिद नं.');
+    sheet.getRangeByName('B3').setText('घरमुलीको नाम');
+    sheet.getRangeByName('C3').setText('घरमुलीको बीमा नं.');
+    sheet.getRangeByName('D3').setText('मोबाइल नं.');
+    sheet.getRangeByName('E3').setText('सदस्य संख्या');
+    sheet.getRangeByName('F3').setText('योगदान रकम');
+
+    for (var fam in newGeneral){
+      int cell = 4;
+      sheet.getRangeByName('A$cell').setText(fam['receiptNo'].toString());
+      cell++;
+    }
+
+    final List<int> bytes = workbook.saveAsStream();
+    workbook.dispose();
+    await saveAndLaunchFile(bytes, 'output.xlsx');
   }
 
   Future<void> saveAndLaunchFile(List<int> bytes, String fileName) async{
@@ -72,12 +75,5 @@ class PDFHelper {
     final exPath = directory.path;
     await Directory(exPath).create(recursive: true);
     return exPath;
-  }
-
-  Future<PdfFont> getFont() async {
-    final data = await rootBundle.load('assets/fonts/arial.ttf');
-    final dataint = data.buffer.asUint8List(data.offsetInBytes,data.lengthInBytes);
-    final PdfFont font = PdfTrueTypeFont(dataint, 12);
-    return font;
   }
 }

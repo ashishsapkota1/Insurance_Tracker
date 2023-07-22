@@ -65,9 +65,9 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
     }
   }
 
-  Future<void> createPDF() async {
-    final pdfHelper = PDFHelper();
-    await pdfHelper.createPDF();
+  Future<void> createExcel() async {
+    final excelHelper = ExcelHelper();
+    await excelHelper.createExcel(familyData);
   }
 
   @override
@@ -207,7 +207,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                       backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF5dbea3)),
                     ),
                     onPressed: (){
-                      createPDF();
+                      createExcel();
                     },
                     child: const Text('Generate Report')
                 ),

@@ -118,7 +118,7 @@ class _AllFamilyPageState extends State<AllFamilyPage> {
                                     onPressed: (){
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode)),
+                                          MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
                                         );
                                     },
                                     child: const Text('Details')

@@ -67,7 +67,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
 
   Future<void> createExcel() async {
     final excelHelper = ExcelHelper();
-    await excelHelper.createExcel(familyData);
+    await excelHelper.createExcel(yearsDropdownValue, sessionDropdownValue, familyData);
   }
 
   @override

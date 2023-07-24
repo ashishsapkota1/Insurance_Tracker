@@ -17,6 +17,8 @@ class FamilyDetailsPage extends StatefulWidget {
 
 class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
   Map<String, dynamic> familyData = {};
+  DatabaseHelper helper = DatabaseHelper();
+  bool _isShown = true;
 
   @override
   void initState() {
@@ -47,6 +49,38 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
     } catch (_) {
       _showAlertDialog('Error', "Could not launch phone");
     }
+  }
+
+  void _deleteRenewal(BuildContext context, String id) async {
+      showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return AlertDialog(
+              title: const Text('Please Confirm'),
+              content: const Text('Are you sure to delete the renewal?'),
+              actions: [
+                TextButton(
+                    onPressed: () async {
+                      setState(() {
+                        _isShown = false;
+                      });
+                      int result = (await helper.deleteRenewal(id));
+                      if (result != 0) {
+                        _showAlertDialog('Status', "Renewal Deleted Successfully.");
+                        fetchFamilyData(int.tryParse(widget.hiCode) ?? 0);
+                      } else {
+                        _showAlertDialog('Status', "Failed to delete renewal.");
+                      }
+                    },
+                    child: const Text('Yes')),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('No'))
+              ],
+            );
+          });
   }
 
   @override
@@ -263,7 +297,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                     backgroundColor: MaterialStateProperty.all<Color>(Colors.blue.shade300)
                                 ),
                                 onPressed: (){
-                                  Navigator.push(
+                                  Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(builder: (context) => EditFamily(hiCode: memNo)),
                                   );
@@ -366,7 +400,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                                     backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF1a457c))
                                                 ),
                                                 onPressed: (){
-                                                  Navigator.push(
+                                                  Navigator.pushReplacement(
                                                     context,
                                                     MaterialPageRoute(builder: (context) => EditRenewal(id: id)),
                                                   );
@@ -378,7 +412,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                                     backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
                                                 ),
                                                 onPressed: (){
-
+                                                    _deleteRenewal(context, id);
                                                 },
                                                 child: const Text('Delete')
                                             ),

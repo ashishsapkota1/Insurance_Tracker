@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hira/database_helper/database_helper.dart';
+import 'package:hira/screens/family_details.dart';
 
 class SearchFamily extends StatefulWidget {
   const SearchFamily({Key? key}) : super(key: key);
@@ -71,6 +72,12 @@ class _SearchFamilyState extends State<SearchFamily> {
                   final name = family['name'];
                   final hiCode = family['hiCode'];
                   return ListTile(
+                    onTap: (){
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
+                      );
+                      },
                     title: Text(name),
                     subtitle: Text(hiCode.toString()),
                   );

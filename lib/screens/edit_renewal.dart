@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hira/screens/family_details.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:hira/database_helper/database_helper.dart';
 
@@ -111,6 +112,14 @@ class _EditRenewalState extends State<EditRenewal> {
     } else {
       return Scaffold(
         appBar: AppBar(
+          leading: BackButton(
+              onPressed: (){
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: renewalData['family'].toString())),
+                );
+              }
+          ),
           centerTitle: true,
           title: const Text('नविकरण सम्पादन'),
           backgroundColor: const Color(0xFF1a457c),

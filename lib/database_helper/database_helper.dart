@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hira/database_helper/family.dart';
 import 'package:hira/database_helper/transaction.dart';
@@ -170,9 +171,30 @@ class DatabaseHelper {
     }
   }
 
+  Future<int> deleteFamily(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection("family").doc(id).delete();
+      return 1;
+    } catch(error) {
+      return 0;
+    }
+  }
+
+  Future<int> deleteRenewal(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection("renewals").doc(id).delete();
+      return 1;
+    } catch(error) {
+      return 0;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getTableData() async {
+    final Source source = await getSource();
     final List<Map<String, dynamic>> familyTableData = [];
-    await FirebaseFirestore.instance.collection("family").orderBy("name").get().then(
+    await FirebaseFirestore.instance.collection("family").orderBy("name")
+        .get(GetOptions(source: source))
+        .then(
           (querySnapshot) {
         for (var docSnapshot in querySnapshot.docs) {
           familyTableData.add({'id': docSnapshot.id, ...docSnapshot.data()});
@@ -184,9 +206,12 @@ class DatabaseHelper {
 
 
   Future<Map<String, dynamic>> getOneFamily(int hiCode) async {
+    final Source source = await getSource();
     final List<Map<String, dynamic>> family = [];
     final List<Map<String, dynamic>> allRenewals = [];
-    await FirebaseFirestore.instance.collection("family").where("hiCode", isEqualTo: hiCode).get().then(
+    await FirebaseFirestore.instance.collection("family").where("hiCode", isEqualTo: hiCode)
+        .get(GetOptions(source: source))
+        .then(
             (querySnapshot) {
           for (var docSnapshot in querySnapshot.docs) {
             family.add({'id': docSnapshot.id, ...docSnapshot.data()});
@@ -194,7 +219,8 @@ class DatabaseHelper {
         }
     );
     await FirebaseFirestore.instance.collection("renewals").where("family", isEqualTo: hiCode)
-        .orderBy('year', descending: true).get().then(
+        .orderBy('year', descending: true)
+        .get(GetOptions(source: source)).then(
             (querySnapshot) {
           for (var docSnapshot in querySnapshot.docs) {
             allRenewals.add({'id': docSnapshot.id, ...docSnapshot.data()});
@@ -209,8 +235,10 @@ class DatabaseHelper {
   }
 
   Future<Map<String, dynamic>> getOneRenewal(String id) async {
+    final Source source = await getSource();
     Map<String, dynamic> oneRenewal = {};
-    await FirebaseFirestore.instance.collection("renewals").doc(id).get().then(
+    await FirebaseFirestore.instance.collection("renewals").doc(id)
+        .get(GetOptions(source: source)).then(
           (DocumentSnapshot doc) {
         final data = doc.data() as Map<String, dynamic>;
         final docId = doc.id;
@@ -222,13 +250,14 @@ class DatabaseHelper {
 
 
   Future<Map<String, dynamic>> getThisSessionData(int year, String session) async {
+    final Source source = await getSource();
     final List<Map<String, dynamic>> allFamily = await getTableData();
     final List<Map<String, dynamic>> allRenewals = [];
     await FirebaseFirestore.instance.collection("renewals")
         .where("year", isEqualTo: year)
         .where("session", isEqualTo: session)
         .orderBy('receiptNo')
-        .get().then(
+        .get(GetOptions(source: source)).then(
             (querySnapshot) {
           for (var docSnapshot in querySnapshot.docs) {
             allRenewals.add({'id': docSnapshot.id, ...docSnapshot.data()});
@@ -296,6 +325,15 @@ class DatabaseHelper {
       'renewDisabled': renewDisabled
     };
     return thisSession;
+  }
+
+  Future<Source> getSource() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      return Source.cache;
+    } else {
+      return Source.server;
+    }
   }
 
   // Future<List<Map<String, dynamic>>> searchData(String searchTerm) async {

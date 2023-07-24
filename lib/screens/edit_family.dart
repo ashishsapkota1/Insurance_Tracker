@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hira/screens/family_details.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:hira/database_helper/database_helper.dart';
 
@@ -112,6 +113,14 @@ class _EditFamilyState extends State<EditFamily> {
     } else {
       return Scaffold(
         appBar: AppBar(
+          leading: BackButton(
+            onPressed: (){
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: widget.hiCode.toString())),
+              );
+            }
+          ),
           centerTitle: true,
           title: const Text('परिवार सम्पादन'),
           backgroundColor: const Color(0xFF1a457c),
@@ -307,6 +316,7 @@ class _EditFamilyState extends State<EditFamily> {
         sessionController));
     if (result != 0) {
       _showAlertDialog('Status', "Family Updated Successfully.");
+
       fetchFamilyData(widget.hiCode);
     } else {
       _showAlertDialog('Status', "Failed to update family.");

@@ -28,9 +28,13 @@ class ExcelHelper {
 
     sheet.getRangeByName('A1:H1').merge();
 
-    sheet.getRangeByName('B2:G6').merge();
+    sheet.getRangeByName('B2:G4').merge();
     sheet.getRangeByName('B2').setText('स्वास्थ्य बिमा नयाँ दर्ता तथा नविकरणको विवरण');
     sheet.getRangeByName('B2').cellStyle.fontSize = 16;
+
+    sheet.getRangeByName('B5:G6').merge();
+    sheet.getRangeByName('B5').setText('$year-$session');
+    sheet.getRangeByName('B5').cellStyle.fontSize = 16;
 
     sheet.getRangeByName('C9:F9').merge();
     sheet.getRangeByName('C9').setText('साधारण परिवार - नयाँ दर्ता');
@@ -64,24 +68,24 @@ class ExcelHelper {
     sheet.getRangeByName('B25').setText('बेनी, म्याग्दी');
     sheet.getRangeByName('B25').cellStyle.fontSize = 14;
 
-    final Worksheet sheet1 = workbook.worksheets.addWithName('General - New');
-    final Worksheet sheet2 = workbook.worksheets.addWithName('General - Renew');
-    final Worksheet sheet3 = workbook.worksheets.addWithName('Aged - New');
-    final Worksheet sheet4 = workbook.worksheets.addWithName('Disabled - New');
-    final Worksheet sheet5 = workbook.worksheets.addWithName('Disabled - Renew');
+    final Worksheet sheet1 = workbook.worksheets.addWithName('साधारण परिवार - नयाँ दर्ता');
+    final Worksheet sheet2 = workbook.worksheets.addWithName('साधारण परिवार - नविकरण');
+    final Worksheet sheet3 = workbook.worksheets.addWithName('जेष्ठ नागरिक - नयाँ दर्ता');
+    final Worksheet sheet4 = workbook.worksheets.addWithName('अशक्त - नयाँ दर्ता');
+    final Worksheet sheet5 = workbook.worksheets.addWithName('अशक्त - नविकरण');
 
     Style globalStyle = workbook.styles.add('style');
     globalStyle.fontSize = 14;
     sheet1.getRangeByName('A1:F1').merge();
-    sheet1.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh');
+    sheet1.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh साधारण परिवार - नयाँ दर्ता');
     sheet2.getRangeByName('A1:F1').merge();
-    sheet2.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh');
+    sheet2.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh साधारण परिवार - नविकरण');
     sheet3.getRangeByName('A1:F1').merge();
-    sheet3.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh');
+    sheet3.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh जेष्ठ नागरिक - नयाँ दर्ता');
     sheet4.getRangeByName('A1:F1').merge();
-    sheet4.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh');
+    sheet4.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh अशक्त - नयाँ दर्ता');
     sheet5.getRangeByName('A1:F1').merge();
-    sheet5.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh');
+    sheet5.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh अशक्त - नविकरण');
 
     if(newGeneral.isNotEmpty){
       final List<ExcelDataRow> generalNewRows = _buildReportDataRows(newGeneral);
@@ -135,17 +139,18 @@ class ExcelHelper {
   }
 
   static Future<String> getExternalDocumentPath() async {
-    var status = await Permission.storage.status;
-    if (!status.isGranted) {
-      await Permission.storage.request();
-    }
+    var status = await Permission.storage.request();
+    var exStatus = await Permission.manageExternalStorage.request();
     Directory directory = Directory("");
-    if (Platform.isAndroid) {
-      directory = Directory("/storage/emulated/0/Download");
+    if(status.isGranted && exStatus.isGranted){
+      if (Platform.isAndroid) {
+        directory = Directory("/storage/emulated/0/Download");
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
     } else {
       directory = await getApplicationDocumentsDirectory();
     }
-
     final exPath = directory.path;
     await Directory(exPath).create(recursive: true);
     return exPath;

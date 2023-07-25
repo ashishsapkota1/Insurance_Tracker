@@ -13,7 +13,7 @@ class ExcelHelper {
 
   ExcelHelper._internal();
 
-  Future<void> createExcel(int year, String session, Map<String, dynamic> familyData) async {
+  Future<String> createExcel(int year, String session, Map<String, dynamic> familyData) async {
 
     final List<dynamic> newGeneral = familyData['newGeneral'];
     final List<dynamic> renewGeneral = familyData['renewGeneral'];
@@ -110,16 +110,18 @@ class ExcelHelper {
 
     final List<int> bytes = workbook.saveAsStream();
     workbook.dispose();
-    await saveAndLaunchFile(bytes, '$year-$session.xlsx');
+    String path = await saveAndLaunchFile(bytes, '$year-$session.xlsx');
+    return path;
   }
 
-  Future<void> saveAndLaunchFile(List<int> bytes, String fileName) async{
+  Future<String> saveAndLaunchFile(List<int> bytes, String fileName) async{
     final path = await getExternalDocumentPath();
     final file = File('$path/$fileName');
     await file.writeAsBytes(bytes, flush: true);
-    if (await Permission.manageExternalStorage.request().isGranted) {
-      await OpenFile.open('$path/$fileName');
-    }
+    // if (await Permission.manageExternalStorage.request().isGranted) {
+    //   await OpenFile.open('$path/$fileName');
+    // }
+    return '$path/$fileName';
   }
 
   List<ExcelDataRow> _buildReportDataRows(List<dynamic> details) {
@@ -139,10 +141,9 @@ class ExcelHelper {
   }
 
   static Future<String> getExternalDocumentPath() async {
-    var status = await Permission.storage.request();
     var exStatus = await Permission.manageExternalStorage.request();
     Directory directory = Directory("");
-    if(status.isGranted && exStatus.isGranted){
+    if(exStatus.isGranted){
       if (Platform.isAndroid) {
         directory = Directory("/storage/emulated/0/Download");
       } else {

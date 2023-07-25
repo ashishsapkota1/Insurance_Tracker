@@ -67,7 +67,8 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
 
   Future<void> createExcel() async {
     final excelHelper = ExcelHelper();
-    await excelHelper.createExcel(yearsDropdownValue, sessionDropdownValue, familyData);
+    String path = await excelHelper.createExcel(yearsDropdownValue, sessionDropdownValue, familyData);
+    _showAlertDialog('Success', 'Report saved at $path');
   }
 
   @override

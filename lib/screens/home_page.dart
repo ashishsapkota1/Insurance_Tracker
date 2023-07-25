@@ -23,12 +23,6 @@ class _HomepageState extends State<Homepage> {
         actions: [
           IconButton(
             onPressed: () {
-              // final databaseHelper = DatabaseHelper();
-              // showSearch(
-              //     context: context,
-              //     // delegate to customize the search bar
-              //     delegate: CustomSearchDelegate(databaseHelper)
-              // );
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const SearchFamily()),
@@ -38,7 +32,7 @@ class _HomepageState extends State<Homepage> {
           )
         ],
         centerTitle: true,
-        title: const Text('स्वास्थ्य बिमा'),
+        title: const Text('स्वास्थ्य बिमा - चण्डिका पौडेल'),
         backgroundColor: const Color(0xFF1a457c),
       ),
       body: Stack(

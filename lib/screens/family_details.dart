@@ -18,7 +18,6 @@ class FamilyDetailsPage extends StatefulWidget {
 class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
   Map<String, dynamic> familyData = {};
   DatabaseHelper helper = DatabaseHelper();
-  bool _isShown = true;
 
   @override
   void initState() {
@@ -61,10 +60,8 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
               actions: [
                 TextButton(
                     onPressed: () async {
-                      setState(() {
-                        _isShown = false;
-                      });
                       int result = (await helper.deleteRenewal(id));
+                      if(context.mounted) Navigator.of(context).pop();
                       if (result != 0) {
                         _showAlertDialog('Status', "Renewal Deleted Successfully.");
                         fetchFamilyData(int.tryParse(widget.hiCode) ?? 0);
@@ -81,6 +78,36 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
               ],
             );
           });
+  }
+
+  void _deleteFamily(BuildContext context, String id) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: const Text('Please Confirm'),
+            content: const Text('Are you sure to delete this family?'),
+            actions: [
+              TextButton(
+                  onPressed: () async {
+                    int result = (await helper.deleteFamily(id));
+                    if(context.mounted) Navigator.of(context).pop();
+                    if (result != 0) {
+                      if(context.mounted) Navigator.pop(context, true);
+                      _showAlertDialog('Status', "Family Deleted Successfully.");
+                    } else {
+                      _showAlertDialog('Status', "Failed to delete family.");
+                    }
+                  },
+                  child: const Text('Yes')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('No'))
+            ],
+          );
+        });
   }
 
   @override
@@ -309,7 +336,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                     backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
                                 ),
                                 onPressed: (){
-
+                                  _deleteFamily(context, id);
                                 },
                                 child: const Text('Delete')
                             ),
@@ -412,7 +439,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                                     backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
                                                 ),
                                                 onPressed: (){
-                                                    _deleteRenewal(context, id);
+                                                  _deleteRenewal(context, id);
                                                 },
                                                 child: const Text('Delete')
                                             ),

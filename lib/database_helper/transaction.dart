@@ -1,6 +1,6 @@
 class TransactionDetail{
   // int? id;
-  final int family;
+  final String family;
   final int year;
   final String session;
   final String amount;
@@ -8,8 +8,9 @@ class TransactionDetail{
   final String isAmountReceived;
   final String transactionType;
   final String receiptNo;
+  final String remarks;
 
-  TransactionDetail(this.family, this.year, this.session, this.amount, this.dateOfTransaction, this.isAmountReceived,this.transactionType, this.receiptNo);
+  TransactionDetail(this.family, this.year, this.session, this.amount, this.dateOfTransaction, this.isAmountReceived,this.transactionType, this.receiptNo, this.remarks);
 
   // TransactionDetail.withId(this.id, this.family, this.year, this.session, this.amount, this.dateOfTransaction, this.isAmountReceived,this.transactionType, this.receiptNo);
 
@@ -27,6 +28,7 @@ class TransactionDetail{
     map['isAmountReceived']=isAmountReceived;
     map['transactionType']=transactionType;
     map['receiptNo'] = receiptNo;
+    map['remarks'] = remarks;
 
     return map;
   }
@@ -39,6 +41,7 @@ class TransactionDetail{
     map['isAmountReceived'] = isAmountReceived;
     map['transactionType'] = transactionType;
     map['receiptNo'] = receiptNo;
+    map['remarks'] = remarks;
     return map;
   }
 

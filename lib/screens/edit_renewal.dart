@@ -28,6 +28,7 @@ class _EditRenewalState extends State<EditRenewal> {
   TextEditingController yearController = TextEditingController();
   TextEditingController sessionController = TextEditingController();
   TextEditingController receiptNoController = TextEditingController();
+  TextEditingController remarksController = TextEditingController();
   TextEditingController transactionTypeController = TextEditingController();
   TextEditingController amountReceivedController = TextEditingController();
 
@@ -40,6 +41,7 @@ class _EditRenewalState extends State<EditRenewal> {
     yearController.dispose();
     sessionController.dispose();
     receiptNoController.dispose();
+    remarksController.dispose();
     transactionTypeController.dispose();
     amountReceivedController.dispose();
     super.dispose();
@@ -69,6 +71,7 @@ class _EditRenewalState extends State<EditRenewal> {
     sessionController.text = renewalData['session'].toString();
     sessionDropdownValue = renewalData['session'].toString();
     receiptNoController.text = renewalData['receiptNo'].toString();
+    remarksController.text = renewalData['remarks'].toString();
     transactionTypeDropdownValue = renewalData['transactionType'].toString();
     transactionTypeController.text = renewalData['transactionType'].toString();
     amountReceivedDropdownValue = renewalData['isAmountReceived'].toString();
@@ -236,6 +239,17 @@ class _EditRenewalState extends State<EditRenewal> {
                           });
                         })),
                 Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextFormField(
+                      controller: remarksController,
+                      decoration: InputDecoration(
+                          label: const Text('कैफियत'),
+                          hintText: 'अपाङ्ग(ख)/विपन्न/म.स्वा.स्व.स.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          )),
+                    )),
+                Padding(
                   padding: const EdgeInsets.all(10),
                   child: DropdownButtonFormField(
                       validator: (value){
@@ -298,7 +312,8 @@ class _EditRenewalState extends State<EditRenewal> {
         sessionController,
         amountReceivedController,
         transactionTypeController,
-        receiptNoController));
+        receiptNoController,
+        remarksController));
     if (result != 0) {
       _showAlertDialog('Status', "Renewal Updated Successfully.");
       fetchRenewalData(widget.id);

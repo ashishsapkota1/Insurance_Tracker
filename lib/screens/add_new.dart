@@ -27,6 +27,7 @@ class _AddFamilyState extends State<AddFamily> {
   TextEditingController noOfMembersController = TextEditingController();
   TextEditingController annualFeeController = TextEditingController();
   TextEditingController receiptNoController = TextEditingController();
+  TextEditingController remarksController = TextEditingController();
   TextEditingController familyTypeController = TextEditingController(text: "General");
   TextEditingController transactionTypeController = TextEditingController(text: "New");
   TextEditingController yearController = TextEditingController(text: NepaliDateTime.now().year.toString());
@@ -42,6 +43,7 @@ class _AddFamilyState extends State<AddFamily> {
     noOfMembersController.dispose();
     annualFeeController.dispose();
     receiptNoController.dispose();
+    remarksController.dispose();
     familyTypeController.dispose();
     transactionTypeController.dispose();
     yearController.dispose();
@@ -305,6 +307,17 @@ class _AddFamilyState extends State<AddFamily> {
                         )),
                   )),
               Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: remarksController,
+                    decoration: InputDecoration(
+                        label: const Text('कैफियत'),
+                        hintText: 'अपाङ्ग(ख)/विपन्न/म.स्वा.स्व.स.',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        )),
+                  )),
+              Padding(
                 padding: const EdgeInsets.all(10),
                 child: DropdownButtonFormField(
                     validator: (value){
@@ -366,6 +379,7 @@ class _AddFamilyState extends State<AddFamily> {
         noOfMembersController,
         annualFeeController,
         receiptNoController,
+        remarksController,
         familyTypeController,
         transactionTypeController,
         yearController,
@@ -380,6 +394,7 @@ class _AddFamilyState extends State<AddFamily> {
       noOfMembersController.clear();
       annualFeeController.clear();
       receiptNoController.clear();
+      remarksController.clear();
     } else {
       _showAlertDialog('Status', "Failed to add new family.");
     }

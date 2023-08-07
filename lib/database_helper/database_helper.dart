@@ -22,6 +22,7 @@ class DatabaseHelper {
       TextEditingController noOfMembersController,
       TextEditingController annualFeeController,
       TextEditingController receiptNoController,
+      TextEditingController remarksController,
       TextEditingController familyTypeController,
       TextEditingController transactionTypeController,
       TextEditingController yearController,
@@ -29,7 +30,7 @@ class DatabaseHelper {
       TextEditingController amountReceivedController) async {
     try {
       Family familyData = Family(
-          int.tryParse(membershipNoController.text) ?? 0,
+          membershipNoController.text,
           familyHeadController.text,
           phoneNoController.text,
           int.tryParse(noOfMembersController.text) ?? 0,
@@ -41,7 +42,7 @@ class DatabaseHelper {
       );
 
       TransactionDetail transactionData = TransactionDetail(
-        int.tryParse(membershipNoController.text) ?? 0,
+        membershipNoController.text,
         int.tryParse(yearController.text) ?? 0,
         sessionController.text,
         annualFeeController.text,
@@ -49,6 +50,7 @@ class DatabaseHelper {
         amountReceivedController.text,
         transactionTypeController.text,
         receiptNoController.text,
+        remarksController.text
       );
       FirebaseFirestore.instance.collection("family").add(familyData.toMap());
       FirebaseFirestore.instance.collection("renewals").add(transactionData.toMap());
@@ -71,7 +73,7 @@ class DatabaseHelper {
       TextEditingController sessionController) async {
     try {
       Family familyData = Family(
-          int.tryParse(membershipNoController.text) ?? 0,
+          membershipNoController.text,
           familyHeadController.text,
           phoneNoController.text,
           int.tryParse(noOfMembersController.text) ?? 0,
@@ -96,10 +98,11 @@ class DatabaseHelper {
       TextEditingController sessionController,
       TextEditingController amountReceivedController,
       TextEditingController transactionTypeController,
-      TextEditingController receiptNoController) async {
+      TextEditingController receiptNoController,
+      TextEditingController remarksController) async {
     try {
       TransactionDetail transactionData = TransactionDetail(
-        0,
+        '',
         int.tryParse(yearController.text) ?? 0,
         sessionController.text,
         annualFeeController.text,
@@ -107,6 +110,7 @@ class DatabaseHelper {
         amountReceivedController.text,
         transactionTypeController.text,
         receiptNoController.text,
+        remarksController.text
       );
       FirebaseFirestore.instance.collection("renewals").doc(id).update(transactionData.updateTransaction());
       return 1;
@@ -120,12 +124,13 @@ class DatabaseHelper {
       String hiCode,
       String amount,
       TextEditingController receiptNoController,
+      TextEditingController remarksController,
       TextEditingController yearController,
       TextEditingController sessionController,
       TextEditingController amountReceivedController) async {
     try {
       Family familyData = Family(
-          0,
+          '',
           '',
           '',
           0,
@@ -136,7 +141,7 @@ class DatabaseHelper {
           ''
       );
       TransactionDetail transactionData = TransactionDetail(
-        int.tryParse(hiCode) ?? 0,
+        hiCode,
         int.tryParse(yearController.text) ?? 0,
         sessionController.text,
         amount,
@@ -144,6 +149,7 @@ class DatabaseHelper {
         amountReceivedController.text,
         "Renew",
         receiptNoController.text,
+        remarksController.text
       );
 
       final List<Map<String, dynamic>> renewal = [];
@@ -171,9 +177,18 @@ class DatabaseHelper {
     }
   }
 
-  Future<int> deleteFamily(String id) async {
+  Future<int> deleteFamily(String id, String hiCode) async {
     try {
       await FirebaseFirestore.instance.collection("family").doc(id).delete();
+      await FirebaseFirestore.instance.collection("renewals").where("family", isEqualTo: hiCode)
+          .get()
+          .then(
+              (querySnapshot) {
+            for (var docSnapshot in querySnapshot.docs) {
+              docSnapshot.reference.delete();
+            }
+          }
+      );
       return 1;
     } catch(error) {
       return 0;
@@ -205,7 +220,7 @@ class DatabaseHelper {
   }
 
 
-  Future<Map<String, dynamic>> getOneFamily(int hiCode) async {
+  Future<Map<String, dynamic>> getOneFamily(String hiCode) async {
     final Source source = await getSource();
     final List<Map<String, dynamic>> family = [];
     final List<Map<String, dynamic>> allRenewals = [];
@@ -276,13 +291,12 @@ class DatabaseHelper {
     final List<Map<String, dynamic>> renewGeneral = [];
     final List<Map<String, dynamic>> newAged = [];
     final List<Map<String, dynamic>> newDisabled = [];
-    final List<Map<String, dynamic>> renewDisabled = [];
     for (var fam in family) {
       final int lastRenewalYear = fam['lastRenewalYear'];
       final String lastRenewalSession = fam['lastRenewalSession'];
       final String familyType = fam['type'];
       if (lastRenewalYear == year - 1 && lastRenewalSession == session &&
-          familyType != "Aged") {
+          familyType != "Aged" && familyType != "Disabled") {
         toBeRenewed.add(fam);
       }
     }
@@ -294,6 +308,7 @@ class DatabaseHelper {
             "isAmountReceived": renew['isAmountReceived'],
             "annualFee": renew['amount'],
             "receiptNo": renew['receiptNo'],
+            "remarks": renew['remarks'],
             "dateOfTransaction": renew['dateOfTransaction'],
             "phnNo": fam['phnNo'],
             "membersNo": fam['membersNo']
@@ -307,10 +322,8 @@ class DatabaseHelper {
             } else if (renew['transactionType'] == 'New' &&
                 fam['type'] == "Disabled") {
               newDisabled.add(familyDetail);
-            } else if (renew['transactionType'] == 'Renew' &&
-                fam['type'] == "Disabled") {
-              renewDisabled.add(familyDetail);
-            } else {
+            } else if (renew['transactionType'] == 'New' &&
+                fam['type'] == "Aged") {
               newAged.add(familyDetail);
             }
           }
@@ -322,7 +335,6 @@ class DatabaseHelper {
       'renewGeneral': renewGeneral,
       'newAged': newAged,
       'newDisabled': newDisabled,
-      'renewDisabled': renewDisabled
     };
     return thisSession;
   }

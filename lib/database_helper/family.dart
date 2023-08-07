@@ -1,6 +1,6 @@
 class Family {
   final String name;
-  final int hiCode;
+  final String hiCode;
   final String phnNo;
   final int membersNo;
   final String annualFee;

@@ -25,6 +25,7 @@ class _RenewState extends State<Renew> {
   NepaliDateTime today = NepaliDateTime.now();
 
   TextEditingController receiptNoController = TextEditingController();
+  TextEditingController remarksController = TextEditingController();
   TextEditingController yearController = TextEditingController(text: NepaliDateTime.now().year.toString());
   TextEditingController sessionController = TextEditingController();
   TextEditingController amountReceivedController = TextEditingController(text: "Yes");
@@ -34,6 +35,7 @@ class _RenewState extends State<Renew> {
   @override
   void dispose(){
     receiptNoController.dispose();
+    remarksController.dispose();
     yearController.dispose();
     sessionController.dispose();
     amountReceivedController.dispose();
@@ -203,6 +205,17 @@ class _RenewState extends State<Renew> {
                         )),
                   )),
               Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TextFormField(
+                    controller: remarksController,
+                    decoration: InputDecoration(
+                        label: const Text('कैफियत'),
+                        hintText: 'अपाङ्ग(ख)/विपन्न/म.स्वा.स्व.स.',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        )),
+                  )),
+              Padding(
                 padding: const EdgeInsets.all(10),
                 child: DropdownButtonFormField(
                     validator: (value){
@@ -261,6 +274,7 @@ class _RenewState extends State<Renew> {
         widget.hiCode,
         widget.amount,
         receiptNoController,
+        remarksController,
         yearController,
         sessionController,
         amountReceivedController));

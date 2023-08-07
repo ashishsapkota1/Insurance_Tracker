@@ -152,7 +152,6 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
       final List<dynamic> renewGeneral = familyData['renewGeneral'];
       final List<dynamic> newAged = familyData['newAged'];
       final List<dynamic> newDisabled = familyData['newDisabled'];
-      final List<dynamic> renewDisabled = familyData['renewDisabled'];
       return SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -330,6 +329,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                     final amount = family['annualFee'];
                     final isAmountReceived = family['isAmountReceived'];
                     final receiptNo = family['receiptNo'];
+                    final remarks = family['remarks'];
                     final String dateOfTransaction = family['dateOfTransaction'].toString().split(' ')[0];
                     return Card(
                       elevation: 5,
@@ -358,7 +358,8 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text('रकम: $amount'),
-                                        Text('रसिद नं.: $receiptNo')
+                                        Text('रसिद नं.: $receiptNo'),
+                                        Text('$remarks')
                                       ],
                                     ),
                                     Column(
@@ -408,6 +409,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                     final amount = family['annualFee'];
                     final isAmountReceived = family['isAmountReceived'];
                     final receiptNo = family['receiptNo'];
+                    final remarks = family['remarks'];
                     final String dateOfTransaction = family['dateOfTransaction'].toString().split(' ')[0];
                     return Card(
                       elevation: 5,
@@ -436,7 +438,8 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text('रकम: $amount'),
-                                        Text('रसिद नं.: $receiptNo')
+                                        Text('रसिद नं.: $receiptNo'),
+                                        Text('$remarks')
                                       ],
                                     ),
                                     Column(
@@ -485,6 +488,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                     final hiCode = family['hiCode'];
                     final amount = family['annualFee'];
                     final isAmountReceived = family['isAmountReceived'];
+                    final remarks = family['remarks'];
                     final receiptNo = family['receiptNo'];
                     final String dateOfTransaction = family['dateOfTransaction'].toString().split(' ')[0];
                     return Card(
@@ -514,7 +518,8 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text('रकम: $amount'),
-                                        Text('रसिद नं.: $receiptNo')
+                                        Text('रसिद नं.: $receiptNo'),
+                                        Text('$remarks')
                                       ],
                                     ),
                                     Column(
@@ -549,7 +554,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Padding(
-              padding: const EdgeInsets.only(left:8, right:8, bottom: 20.0),
+              padding: const EdgeInsets.only(left:8, right:8, bottom: 60.0),
               child: SafeArea(
                 bottom: true,
                 child: ListView.builder(
@@ -564,6 +569,7 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                     final amount = family['annualFee'];
                     final isAmountReceived = family['isAmountReceived'];
                     final receiptNo = family['receiptNo'];
+                    final remarks = family['remarks'];
                     final String dateOfTransaction = family['dateOfTransaction'].toString().split(' ')[0];
                     return Card(
                       elevation: 5,
@@ -592,85 +598,8 @@ class _ThisSessionPageState extends State<ThisSessionPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text('रकम: $amount'),
-                                        Text('रसिद नं.: $receiptNo')
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('मिति: $dateOfTransaction'),
-                                        Row(
-                                          children: [
-                                            const Text('रकम भुक्तानि?'),
-                                            if (isAmountReceived.toString() == 'Yes')
-                                              Image.asset('assets/tick.png', width: 30, height: 30),
-                                            if (isAmountReceived.toString() == 'No')
-                                              Image.asset('assets/cross.png', width: 30, height: 30),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                )
-                            ),
-                          ],
-                        ),
-                        // Add more fields as needed
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            const Text(
-              'अशक्त परिवार - नविकरण',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left:8, right:8, bottom: 100.0),
-              child: SafeArea(
-                bottom: true,
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: renewDisabled.length,
-                  itemBuilder: (context, index) {
-                    final family = renewDisabled[index];
-                    final name = family['name'];
-                    final hiCode = family['hiCode'];
-                    final amount = family['annualFee'];
-                    final isAmountReceived = family['isAmountReceived'];
-                    final receiptNo = family['receiptNo'];
-                    final String dateOfTransaction = family['dateOfTransaction'].toString().split(' ')[0];
-                    return Card(
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(
-                          side: const BorderSide(color: Colors.blueAccent),
-                          borderRadius: BorderRadius.circular(8)),
-                      child: ListTile(
-                        onTap: (){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: hiCode.toString())),
-                          );
-                        },
-                        contentPadding:const EdgeInsets.all(8),
-                        title: Text('$name', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('$hiCode', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
-                            Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text('रकम: $amount'),
-                                        Text('रसिद नं.: $receiptNo')
+                                        Text('रसिद नं.: $receiptNo'),
+                                        Text('$remarks')
                                       ],
                                     ),
                                     Column(

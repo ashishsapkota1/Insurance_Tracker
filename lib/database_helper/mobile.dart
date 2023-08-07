@@ -19,7 +19,6 @@ class ExcelHelper {
     final List<dynamic> renewGeneral = familyData['renewGeneral'];
     final List<dynamic> newAged = familyData['newAged'];
     final List<dynamic> newDisabled = familyData['newDisabled'];
-    final List<dynamic> renewDisabled = familyData['renewDisabled'];
 
     final Workbook workbook = Workbook();
 
@@ -52,10 +51,6 @@ class ExcelHelper {
     sheet.getRangeByName('C15').setText('अशक्त - नयाँ दर्ता');
     sheet.getRangeByName('C15').cellStyle.fontSize = 12;
 
-    sheet.getRangeByName('C17:F17').merge();
-    sheet.getRangeByName('C17').setText('अशक्त - नविकरण');
-    sheet.getRangeByName('C17').cellStyle.fontSize = 12;
-
     sheet.getRangeByName('B22:G22').merge();
     sheet.getRangeByName('B22').setText('दर्ता सहयोगी');
     sheet.getRangeByName('B22').cellStyle.fontSize = 12;
@@ -72,7 +67,6 @@ class ExcelHelper {
     final Worksheet sheet2 = workbook.worksheets.addWithName('साधारण परिवार - नविकरण');
     final Worksheet sheet3 = workbook.worksheets.addWithName('जेष्ठ नागरिक - नयाँ दर्ता');
     final Worksheet sheet4 = workbook.worksheets.addWithName('अशक्त - नयाँ दर्ता');
-    final Worksheet sheet5 = workbook.worksheets.addWithName('अशक्त - नविकरण');
 
     Style globalStyle = workbook.styles.add('style');
     globalStyle.fontSize = 14;
@@ -84,8 +78,6 @@ class ExcelHelper {
     sheet3.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh जेष्ठ नागरिक - नयाँ दर्ता');
     sheet4.getRangeByName('A1:F1').merge();
     sheet4.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh अशक्त - नयाँ दर्ता');
-    sheet5.getRangeByName('A1:F1').merge();
-    sheet5.getRangeByName('A1').setText('2080 Baishakh-Jestha-Ashadh अशक्त - नविकरण');
 
     if(newGeneral.isNotEmpty){
       final List<ExcelDataRow> generalNewRows = _buildReportDataRows(newGeneral);
@@ -102,10 +94,6 @@ class ExcelHelper {
     if(newDisabled.isNotEmpty){
       final List<ExcelDataRow> disabledNewRows = _buildReportDataRows(newDisabled);
       sheet4.importData(disabledNewRows, 3, 1);
-    }
-    if(renewDisabled.isNotEmpty){
-      final List<ExcelDataRow> disabledRenewRows = _buildReportDataRows(renewDisabled);
-      sheet5.importData(disabledRenewRows, 3, 1);
     }
 
     final List<int> bytes = workbook.saveAsStream();
@@ -134,6 +122,7 @@ class ExcelHelper {
         ExcelDataCell(columnHeader: 'मोबाइल नं.', value: fam['phnNo']),
         ExcelDataCell(columnHeader: 'सदस्य संख्या', value: fam['membersNo']),
         ExcelDataCell(columnHeader: 'योगदान रकम', value: fam['annualFee']),
+        ExcelDataCell(columnHeader: 'कैफियत', value: fam['remarks']),
       ]);
     }).toList();
 

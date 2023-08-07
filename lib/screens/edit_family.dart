@@ -4,7 +4,7 @@ import 'package:nepali_utils/nepali_utils.dart';
 import 'package:hira/database_helper/database_helper.dart';
 
 class EditFamily extends StatefulWidget {
-  final int hiCode;
+  final String hiCode;
 
   const EditFamily({super.key, required this.hiCode});
 
@@ -53,7 +53,7 @@ class _EditFamilyState extends State<EditFamily> {
     fetchFamilyData(widget.hiCode);
   }
 
-  Future<void> fetchFamilyData(int hiCode) async {
+  Future<void> fetchFamilyData(String hiCode) async {
     final databaseHelper = DatabaseHelper();
     final data = await databaseHelper.getOneFamily(hiCode);
     setState(() {
@@ -117,7 +117,7 @@ class _EditFamilyState extends State<EditFamily> {
             onPressed: (){
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: widget.hiCode.toString())),
+                MaterialPageRoute(builder: (context) => FamilyDetailsPage(hiCode: widget.hiCode)),
               );
             }
           ),

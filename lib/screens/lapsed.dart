@@ -41,15 +41,17 @@ class _LapsedPageState extends State<LapsedPage> {
     final data = await databaseHelper.getTableData();
     List<Map<String, dynamic>> lapsedFamily = [];
     for (var fam in data) {
-      List<String> words = fam['lastRenewalSession'].toString().split("-");
-      int monthNumber = months.indexOf(words[2])+1 == 12 ? 1 : months.indexOf(words[2])+2;
-      NepaliDateTime lastRenewalDate = NepaliDateTime(
-          fam['lastRenewalYear']+1,
-          monthNumber,
-          0
-      );
-      if (today.isAfter(lastRenewalDate)) {
-        lapsedFamily.add(fam);
+      if (fam['type'] == 'General'){
+        List<String> words = fam['lastRenewalSession'].toString().split("-");
+        int monthNumber = months.indexOf(words[2])+1 == 12 ? 1 : months.indexOf(words[2])+2;
+        NepaliDateTime lastRenewalDate = NepaliDateTime(
+            fam['lastRenewalYear']+1,
+            monthNumber,
+            0
+        );
+        if (today.isAfter(lastRenewalDate)) {
+          lapsedFamily.add(fam);
+        }
       }
     }
     setState(() {

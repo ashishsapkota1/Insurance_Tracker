@@ -22,10 +22,10 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
   @override
   void initState() {
     super.initState();
-    fetchFamilyData(int.tryParse(widget.hiCode)??0);
+    fetchFamilyData(widget.hiCode);
   }
 
-  Future<void> fetchFamilyData(int hiCode) async {
+  Future<void> fetchFamilyData(String hiCode) async {
     final databaseHelper = DatabaseHelper();
     final data = await databaseHelper.getOneFamily(hiCode);
     setState(() {
@@ -64,7 +64,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                       if(context.mounted) Navigator.of(context).pop();
                       if (result != 0) {
                         _showAlertDialog('Status', "Renewal Deleted Successfully.");
-                        fetchFamilyData(int.tryParse(widget.hiCode) ?? 0);
+                        fetchFamilyData(widget.hiCode);
                       } else {
                         _showAlertDialog('Status', "Failed to delete renewal.");
                       }
@@ -80,7 +80,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
           });
   }
 
-  void _deleteFamily(BuildContext context, String id) async {
+  void _deleteFamily(BuildContext context, String id, String memNo) async {
     showDialog(
         context: context,
         builder: (BuildContext ctx) {
@@ -90,7 +90,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
             actions: [
               TextButton(
                   onPressed: () async {
-                    int result = (await helper.deleteFamily(id));
+                    int result = (await helper.deleteFamily(id, memNo));
                     if(context.mounted) Navigator.of(context).pop();
                     if (result != 0) {
                       if(context.mounted) Navigator.pop(context, true);
@@ -124,7 +124,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
     } else {
       final String id = familyData['family']['id'].toString();
       final String name = familyData['family']['name'].toString().toUpperCase();
-      final int memNo = familyData['family']['hiCode'];
+      final String memNo = familyData['family']['hiCode'].toString();
       final int famNo = familyData['family']['membersNo'];
       final String annualFee = familyData['family']['annualFee'].toString();
       final String contact = familyData['family']['phnNo'].toString();
@@ -184,7 +184,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                       style: TextStyle(color: Colors.grey),
                                     ),
                                     Text(
-                                      memNo.toString(),
+                                      memNo,
                                       style: const TextStyle(fontSize: 18, color: Colors.white),
                                     )
                                   ],
@@ -336,7 +336,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                     backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
                                 ),
                                 onPressed: (){
-                                  _deleteFamily(context, id);
+                                  _deleteFamily(context, id, memNo);
                                 },
                                 child: const Text('Delete')
                             ),
@@ -361,6 +361,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                         final int renewalYear = trans['year'];
                         final String renewalSession = trans['session'].toString();
                         final String receiptNo = trans['receiptNo'].toString();
+                        final String remarks = trans['remarks'].toString();
                         final String amount = trans['amount'].toString();
                         final String date = trans['dateOfTransaction'].toString();
                         final String transactionType = trans['transactionType'].toString();
@@ -422,6 +423,7 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                         Column (
                                           crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
+                                            Text(remarks),
                                             ElevatedButton(
                                                 style: ButtonStyle(
                                                     backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF1a457c))

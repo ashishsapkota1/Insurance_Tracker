@@ -32,8 +32,9 @@ class _SearchFamilyState extends State<SearchFamily> {
     List searchedData = [];
     for (var fam in familyData) {
       String name = fam['name'];
-      int hiCode = fam['hiCode'];
-      if (name.toLowerCase().contains(searchTerm.toLowerCase()) || hiCode.toString().toLowerCase().contains(searchTerm.toLowerCase())){
+      String hiCode = fam['hiCode'];
+      String phnNo = fam['phnNo'];
+      if (name.toLowerCase().contains(searchTerm.toLowerCase()) || hiCode.toLowerCase().contains(searchTerm.toLowerCase()) || phnNo.toLowerCase().contains(searchTerm.toLowerCase())){
         searchedData.add(fam);
       }
     }
@@ -69,8 +70,9 @@ class _SearchFamilyState extends State<SearchFamily> {
                 itemCount: searchResult.length,
                 itemBuilder: (context, index){
                   final family = searchResult[index];
-                  final name = family['name'];
+                  final name = family['name'].toString();
                   final hiCode = family['hiCode'];
+                  final phnNo = family['phnNo'];
                   return ListTile(
                     onTap: (){
                       Navigator.pushReplacement(
@@ -79,7 +81,7 @@ class _SearchFamilyState extends State<SearchFamily> {
                       );
                       },
                     title: Text(name),
-                    subtitle: Text(hiCode.toString()),
+                    subtitle: Text('$hiCode --- Phone: $phnNo')
                   );
                 }
               )

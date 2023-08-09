@@ -384,72 +384,156 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                 Row(
                                   children: [
                                     Expanded(
-                                        child:
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text('रसिद नं.: $receiptNo'),
-                                              Text('मिति: $dateOfTransaction'),
-                                              Text('रकम: $amount'),
-                                              Row(
-                                                children: [
-                                                  const Text('रकम भुक्तानि?'),
-                                                  if (isAmountReceived == 'Yes')
-                                                    Image.asset('assets/tick.png', width: 30, height: 30),
-                                                  if (isAmountReceived == 'No')
-                                                    Image.asset('assets/cross.png', width: 30, height: 30),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    padding: const EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2),
-                                                    decoration: BoxDecoration(
-                                                        color: (transactionType == 'New' ?  const Color(0xFF5dbea3) : const Color(0xFF1a457c)),
-                                                        borderRadius: BorderRadius.circular(8)
-                                                    ),
-                                                    child: Text(
-                                                      transactionType,
-                                                      style: const TextStyle(color: Colors.white),
-                                                    ),
-                                                  )
-                                                ],
-                                              )
-                                            ],
+                                      flex: 1,
+                                      child:
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'रसिद नं.:',
+                                            style: TextStyle(color: Colors.grey),
                                           ),
+                                          Text(
+                                            receiptNo,
+                                            style: const TextStyle(fontSize: 16),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     Expanded(
+                                      flex: 1,
                                       child:
-                                        Column (
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          children: [
-                                            Text(remarks),
-                                            ElevatedButton(
-                                                style: ButtonStyle(
-                                                    backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF1a457c))
-                                                ),
-                                                onPressed: (){
-                                                  Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) => EditRenewal(id: id)),
-                                                  );
-                                                },
-                                                child: const Text('Edit')
-                                            ),
-                                            ElevatedButton(
-                                                style: ButtonStyle(
-                                                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
-                                                ),
-                                                onPressed: (){
-                                                  _deleteRenewal(context, id);
-                                                },
-                                                child: const Text('Delete')
-                                            ),
-                                          ],
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'रकम:',
+                                            style: TextStyle(color: Colors.grey),
+                                          ),
+                                          Text(
+                                            amount,
+                                            style: const TextStyle(fontSize: 16),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child:
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'रकम भुक्तानि?',
+                                            style: TextStyle(color: Colors.grey),
+                                          ),
+                                          if (isAmountReceived == 'Yes')
+                                            Image.asset('assets/tick.png', width: 30, height: 30),
+                                          if (isAmountReceived == 'No')
+                                            Image.asset('assets/cross.png', width: 30, height: 30),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                        flex: 1,
+                                        child:
+                                        Container(
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2),
+                                          decoration: BoxDecoration(
+                                              color: (transactionType == 'New' ?  const Color(0xFF5dbea3) : const Color(0xFF1a457c)),
+                                              borderRadius: BorderRadius.circular(8)
+                                          ),
+                                          child: Text(
+                                            transactionType,
+                                            style: const TextStyle(color: Colors.white),
+                                          ),
                                         )
                                     ),
                                   ],
-                                )
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child:
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'दर्ता मिति:',
+                                            style: TextStyle(color: Colors.grey),
+                                          ),
+                                          Text(
+                                            dateOfTransaction,
+                                            style: const TextStyle(fontSize: 16),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child:
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'सेवा समाप्त:',
+                                            style: TextStyle(color: Colors.grey),
+                                          ),
+                                          Text(
+                                            dateOfTransaction,
+                                            style: const TextStyle(fontSize: 16),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                            remarks
+                                        )
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF1a457c))
+                                        ),
+                                        onPressed: (){
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => EditRenewal(id: id)),
+                                          );
+                                        },
+                                        child: const Text('Edit')
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
+                                        ),
+                                        onPressed: (){
+                                          _deleteRenewal(context, id);
+                                        },
+                                        child: const Text('Delete')
+                                    ),
+
+                                  ],
+                                ),
                               ],
                             ),
                           ),

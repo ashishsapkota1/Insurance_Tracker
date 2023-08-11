@@ -367,6 +367,8 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                         final String transactionType = trans['transactionType'].toString();
                         final String isAmountReceived = trans['isAmountReceived'].toString();
                         final String dateOfTransaction = NepaliDateFormat("yyyy.MMMM.dd").format(NepaliDateTime.parse(date));
+                        final String startDate = trans['startDate'];
+                        final String expiryDate = trans['expiryDate'];
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: ListTile(
@@ -481,11 +483,28 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           const Text(
+                                            'सेवा सुरु:',
+                                            style: TextStyle(color: Colors.grey),
+                                          ),
+                                          Text(
+                                            startDate,
+                                            style: const TextStyle(fontSize: 16),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child:
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
                                             'सेवा समाप्त:',
                                             style: TextStyle(color: Colors.grey),
                                           ),
                                           Text(
-                                            dateOfTransaction,
+                                            expiryDate,
                                             style: const TextStyle(fontSize: 16),
                                           )
                                         ],
@@ -499,10 +518,21 @@ class _FamilyDetailsPageState extends State<FamilyDetailsPage> {
                                 Row(
                                   children: [
                                     Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                            remarks
-                                        )
+                                      flex: 1,
+                                      child:
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'कैफियत:',
+                                            style: TextStyle(color: Colors.grey),
+                                          ),
+                                          Text(
+                                            remarks,
+                                            style: const TextStyle(fontSize: 16),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                     const SizedBox(
                                       width: 10,

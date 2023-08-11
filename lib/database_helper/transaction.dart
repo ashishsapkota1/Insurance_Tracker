@@ -9,8 +9,10 @@ class TransactionDetail{
   final String transactionType;
   final String receiptNo;
   final String remarks;
+  final String startDate;
+  final String expiryDate;
 
-  TransactionDetail(this.family, this.year, this.session, this.amount, this.dateOfTransaction, this.isAmountReceived,this.transactionType, this.receiptNo, this.remarks);
+  TransactionDetail(this.family, this.year, this.session, this.amount, this.dateOfTransaction, this.isAmountReceived,this.transactionType, this.receiptNo, this.remarks, this.startDate, this.expiryDate);
 
   // TransactionDetail.withId(this.id, this.family, this.year, this.session, this.amount, this.dateOfTransaction, this.isAmountReceived,this.transactionType, this.receiptNo);
 
@@ -29,6 +31,8 @@ class TransactionDetail{
     map['transactionType']=transactionType;
     map['receiptNo'] = receiptNo;
     map['remarks'] = remarks;
+    map['startDate'] = startDate;
+    map['expiryDate'] = expiryDate;
 
     return map;
   }
@@ -42,6 +46,8 @@ class TransactionDetail{
     map['transactionType'] = transactionType;
     map['receiptNo'] = receiptNo;
     map['remarks'] = remarks;
+    map['startDate'] = startDate;
+    map['expiryDate'] = expiryDate;
     return map;
   }
 

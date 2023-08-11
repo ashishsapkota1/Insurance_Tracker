@@ -14,6 +14,27 @@ class DatabaseHelper {
 
   DatabaseHelper._internal();
 
+  Map<String, String> getStartAndExpiryDate(int renewalYear, String renewalSession){
+    List<String> months = ['बैशाख', 'जेठ', 'असार', 'साउन', 'भदौ', 'असोज',
+      'कार्तिक', 'मंसिर', 'पुष', 'माघ', 'फागुन', 'चैत'];
+    String lastMonth = renewalSession.split("-")[2];
+    int monthNumber = months.indexOf(lastMonth)+1;
+    String startDate = '';
+    String expiryDate = '';
+    if (monthNumber==12){
+      startDate = NepaliDateFormat("yyyy.MMMM.dd").format(NepaliDateTime(renewalYear+1, 2, 1));
+      expiryDate = NepaliDateFormat("yyyy.MMMM.dd").format(NepaliDateTime(renewalYear+2, 1, 30));
+    } else {
+      startDate = NepaliDateFormat("yyyy.MMMM.dd").format(NepaliDateTime(renewalYear, monthNumber+2, 1));
+      expiryDate = NepaliDateFormat("yyyy.MMMM.dd").format(NepaliDateTime(renewalYear+1, monthNumber+1, 30));
+    }
+    Map<String, String> dates = {
+      'startDate': startDate,
+      'expiryDate': expiryDate
+    };
+    return dates;
+  }
+
   Future<int> insertFamily(
       TextEditingController familyHeadController,
       TextEditingController membershipNoController,
@@ -40,7 +61,7 @@ class DatabaseHelper {
           sessionController.text,
           addressController.text
       );
-
+      Map<String, String> dates = getStartAndExpiryDate(int.tryParse(yearController.text)??0, sessionController.text);
       TransactionDetail transactionData = TransactionDetail(
         membershipNoController.text,
         int.tryParse(yearController.text) ?? 0,
@@ -50,7 +71,9 @@ class DatabaseHelper {
         amountReceivedController.text,
         transactionTypeController.text,
         receiptNoController.text,
-        remarksController.text
+        remarksController.text,
+        dates['startDate']??'',
+        dates['expiryDate']??''
       );
       FirebaseFirestore.instance.collection("family").add(familyData.toMap());
       FirebaseFirestore.instance.collection("renewals").add(transactionData.toMap());
@@ -101,6 +124,7 @@ class DatabaseHelper {
       TextEditingController receiptNoController,
       TextEditingController remarksController) async {
     try {
+      Map<String, String> dates = getStartAndExpiryDate(int.tryParse(yearController.text)??0, sessionController.text);
       TransactionDetail transactionData = TransactionDetail(
         '',
         int.tryParse(yearController.text) ?? 0,
@@ -110,7 +134,9 @@ class DatabaseHelper {
         amountReceivedController.text,
         transactionTypeController.text,
         receiptNoController.text,
-        remarksController.text
+        remarksController.text,
+        dates['startDate']??'',
+        dates['expiryDate']??''
       );
       FirebaseFirestore.instance.collection("renewals").doc(id).update(transactionData.updateTransaction());
       return 1;
@@ -140,6 +166,7 @@ class DatabaseHelper {
           sessionController.text,
           ''
       );
+      Map<String, String> dates = getStartAndExpiryDate(int.tryParse(yearController.text)??0, sessionController.text);
       TransactionDetail transactionData = TransactionDetail(
         hiCode,
         int.tryParse(yearController.text) ?? 0,
@@ -149,7 +176,9 @@ class DatabaseHelper {
         amountReceivedController.text,
         "Renew",
         receiptNoController.text,
-        remarksController.text
+        remarksController.text,
+        dates['startDate']??'',
+        dates['expiryDate']??''
       );
 
       final List<Map<String, dynamic>> renewal = [];
